@@ -1,21 +1,18 @@
 local M = {}
 
 M.setup = function()
-  -- Load the mini.trailspace module
   require("mini.trailspace").setup()
 
-  -- Create an autocommand group for trimming trailing spaces on save
   vim.api.nvim_create_augroup("TrimTrailingSpaceOnSave", { clear = true })
 
-  -- Define the autocommand
   vim.api.nvim_create_autocmd("BufWritePre", {
     group = "TrimTrailingSpaceOnSave",
     pattern = "*",
     callback = function()
-      -- Trim trailing whitespace
       require("mini.trailspace").trim()
-      -- Optionally, trim final blank lines
-      require("mini.trailspace").trim_last_lines()
+      local last_non_empty_line = vim.fn.prevnonblank(vim.fn.line('$'))
+      vim.cmd(string.format("silent! %d,$d", last_non_empty_line + 1))
+      vim.cmd("silent! $put _")
     end,
   })
 end
