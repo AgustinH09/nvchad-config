@@ -1,5 +1,19 @@
 return {
   {
+    "preservim/nerdcommenter",
+    event = "VeryLazy",
+    config = function()
+      require("configs.nerdcommenter").setup()
+    end,
+  },
+  {
+    "echasnovski/mini.nvim",
+    event = "BufWritePre",
+    config = function()
+      require("configs.mini.trailspace").setup()
+    end,
+  },
+  {
     "stevearc/conform.nvim",
     -- event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
@@ -15,22 +29,8 @@ return {
     opts = {
       ensure_installed = {
         "vim", "lua", "vimdoc",
-        "html", "css",
+        "html", "css", "ruby", "go"
       },
     },
-  },
-  {
-    "preservim/nerdcommenter",
-    event = "VeryLazy",
-    config = function()
-      require("custom.configs.nerdcommenter").setup()
-    end,
-  },
-  {
-    "echasnovski/mini.nvim",
-    version = false, -- Use the latest version
-    config = function()
-      require("custom.configs.minitrailspace").setup()
-    end,
   },
 }
