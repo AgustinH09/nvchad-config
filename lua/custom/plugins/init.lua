@@ -1,15 +1,17 @@
-return {
+local plugins = {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
-    opts = require "configs.conform",
+    -- event = 'BufWritePre', -- Uncomment for format on save
+    opts = require "custom.configs.conform", -- Use custom configs
   },
+  -- LSPConfig Plugin
   {
     "neovim/nvim-lspconfig",
     config = function()
-      require "configs.lspconfig"
+      require "custom.configs.lspconfig" -- Use custom configs
     end,
   },
+  -- Treesitter Plugin
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -23,7 +25,13 @@ return {
     "preservim/nerdcommenter",
     event = "VeryLazy",
     config = function()
-      require("custom.configs.nerdcommenter").setup()
+      require("custom.configs.nerdcommenter").setup()  
+    end,
+  },
+  {
+    "custom/trim_spaces", -- Dummy entry, no actual plugin, used for organizing config loading
+    config = function()
+      require("custom.configs.trim_spaces").setup()
     end,
   },
   {
@@ -32,5 +40,8 @@ return {
     config = function()
       require("custom.configs.minitrailspace").setup()
     end,
-  },
-}
+  }, 
+}    
+   
+return plugins
+
