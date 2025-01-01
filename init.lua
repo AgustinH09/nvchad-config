@@ -34,4 +34,9 @@ require "autocmds"
 
 vim.schedule(function()
   require "mappings"
+  require "configs.harpoon.mappings"
 end)
+
+vim.opt.relativenumber = true
+vim.opt.number = true
+

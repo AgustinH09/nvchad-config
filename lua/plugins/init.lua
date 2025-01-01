@@ -1,7 +1,8 @@
 return {
+  require "plugins.harpoon",
   {
     "preservim/nerdcommenter",
-    event = "VeryLazy",
+    event= { "BufReadPost", "BufNewFile" },
     config = function()
       require("configs.nerdcommenter").setup()
     end,
@@ -57,3 +58,4 @@ return {
     },
   },
 }
+
