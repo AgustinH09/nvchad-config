@@ -1,19 +1,5 @@
 return {
   require "plugins.nvim-telescope.telescope-frecency",
-  {
-    "preservim/nerdcommenter",
-    event = { "BufReadPost", "BufNewFile" },
-    config = function()
-      require("configs.nerdcommenter").setup()
-    end,
-  },
-  {
-    "echasnovski/mini.nvim",
-    event = "BufWritePre",
-    config = function()
-      require("configs.mini.trailspace").setup()
-    end,
-  },
 
   {
     "nvim-treesitter/nvim-treesitter",
@@ -82,7 +68,7 @@ return {
 
   {
     "rshkarin/mason-nvim-lint",
-    event = "verylazy",
+    event = "VeryLazy",
     dependencies = { "nvim-lint" },
     config = function()
       require "configs.mason-lint"
