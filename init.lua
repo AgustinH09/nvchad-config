@@ -35,8 +35,10 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
   require "configs.harpoon.mappings"
+  require "configs.nvim-tree"
 end)
 
+-- Own
 vim.opt.relativenumber = true
 vim.opt.number = true
 

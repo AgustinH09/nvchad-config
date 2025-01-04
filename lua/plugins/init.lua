@@ -1,8 +1,8 @@
 return {
-  require "plugins.harpoon",
+  require "plugins.nvim-telescope.telescope-frecency",
   {
     "preservim/nerdcommenter",
-    event= { "BufReadPost", "BufNewFile" },
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("configs.nerdcommenter").setup()
     end,
@@ -14,25 +14,79 @@ return {
       require("configs.mini.trailspace").setup()
     end,
   },
+
   {
-    "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
-    opts = require "configs.conform",
+    "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require "configs.treesitter"
+    end,
   },
+
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = "Telescope",
+    opts = function()
+      return require "nvchad.configs.telescope"
+    end,
+  },
+
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
+      --require("nvchad.config.lspconfig").defaults()
       require "configs.lspconfig"
     end,
   },
+
   {
-    "nvim-treesitter/nvim-treesitter",
+    "williamboman/mason-lspconfig.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-lspconfig" },
+    config = function()
+      require "configs.mason-lspconfig"
+    end,
+  },
+
+  {
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require "configs.lint"
+    end,
+  },
+
+  {
+    "rshkarin/mason-nvim-lint",
+    event = "verylazy",
+    dependencies = { "nvim-lint" },
+    config = function()
+      require "configs.mason-lint"
+    end,
+  },
+
+  {
+    "stevearc/conform.nvim",
+    event = "BufWritePre", -- uncomment for format on save
+    opts = require "configs.conform",
+  },
+
+  {
+    "zapling/mason-conform.nvim",
+    event = "VeryLazy",
+    dependencies = { "conform.nvim" },
+    config = function()
+      require "configs.mason-conform"
+    end,
+  },
+
+  {
+    "vhyrro/luarocks.nvim",
+    priority = 1001, -- this plugin needs to run before anything else
     opts = {
-      ensure_installed = {
-        "vim", "lua", "vimdoc",
-        "html", "css", "ruby", "go"
-      },
+      rocks = { "magick" },
     },
   },
 }
-
