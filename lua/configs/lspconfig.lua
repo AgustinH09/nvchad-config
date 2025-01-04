@@ -22,6 +22,7 @@ lspconfig.servers = {
   "html",
   "cssls",
   "gopls",
+  "ruby_lsp",
 }
 
 -- list of servers configured with default config.
@@ -99,6 +100,30 @@ lspconfig.gopls.setup {
       completeUnimported = true,
       usePlaceholders = true,
       staticcheck = true,
+    },
+  },
+}
+
+-- ruby_ls
+lspconfig.ruby_lsp.setup {
+  on_attach = function(client, bufnr)
+    -- Disable formatting if using an external formatter like conform.nvim
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+    on_attach(client, bufnr)
+  end,
+  on_init = on_init,
+  capabilities = capabilities,
+  cmd = { "ruby-lsp" },
+  filetypes = { "ruby" },
+  root_dir = lspconfig.util.root_pattern("Gemfile", ".git"),
+  settings = {
+    ruby = {
+      diagnostics = true,
+      formatting = false,
+      lint = true,
+      completion = true,
+      ignored_diagnostics = { "Layout/TrailingEmptyLines" },
     },
   },
 }
