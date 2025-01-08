@@ -44,4 +44,3 @@ vim.opt.number = true
 
 -- Avante
 vim.opt.laststatus = 3
-

@@ -21,8 +21,10 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "j-hui/fidget.nvim" },
     config = function()
-      --require("nvchad.config.lspconfig").defaults()
+      -- require("nvchad.config.lspconfig").defaults()
+      require("fidget").setup {}
       require "configs.lspconfig"
     end,
   },
