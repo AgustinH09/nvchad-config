@@ -19,6 +19,7 @@ local options = {
     "css",
     "javascript",
     "typescript",
+    "node",
     "help",
   },
 

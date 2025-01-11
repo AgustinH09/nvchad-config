@@ -46,9 +46,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
   end,
 })
--- local saga = require "lspsaga"
---
--- -- Lspsaga setup with default configurations
--- saga.setup {}
--- local opts = { noremap = true, silent = true }
--- vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
