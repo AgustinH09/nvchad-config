@@ -8,15 +8,16 @@ return {
       require "configs.treesitter"
     end,
   },
+
   {
-"nvim-treesitter/nvim-treesitter-textobjects",
-dependencies = { "nvim-treesitter/nvim-treesitter" },
-config = function()
-  require "nvim-treesitter.configs".setup {
-    require "configs.treesitter-textobjects",
-  }
-end
-},
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("nvim-treesitter.configs").setup {
+        require "configs.treesitter-textobjects",
+      }
+    end,
+  },
 
   {
     "nvim-telescope/telescope.nvim",

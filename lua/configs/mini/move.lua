@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = function()
-  require("mini.ai").setup {
+  require("mini.move").setup {
     -- Module mappings. Use `''` (empty string) to disable one.
     mappings = {
       -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl.

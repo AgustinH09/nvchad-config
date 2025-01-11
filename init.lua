@@ -37,3 +37,16 @@ vim.schedule(function()
   require "configs.harpoon.mappings"
   require "configs.nvim-tree"
 end)
+
+-- Enable persistent undo
+if vim.fn.has "persistent_undo" == 1 then
+  local undodir = vim.fn.expand "~/.undodir"
+
+  -- Create directory if it doesn't exist
+  if vim.fn.isdirectory(undodir) == 0 then
+    vim.fn.mkdir(undodir, "p", "0700")
+  end
+
+  vim.opt.undodir = undodir
+  vim.opt.undofile = true
+end
