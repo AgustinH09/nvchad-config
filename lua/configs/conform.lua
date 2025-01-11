@@ -4,7 +4,10 @@ local options = {
     css = { "prettier" },
     html = { "prettier" },
     ruby = { "rubocop" },
-    go = { "gofumpt", "goimports-reviser", "golines" },
+    go = { "gofumpt", "goimports-reviser", "golines", "crlfmt" },
+    javascript = { "prettier" },
+    typescript = { "prettier" },
+    node = { "prettier" },
   },
 
   formatters = {

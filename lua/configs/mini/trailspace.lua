@@ -10,9 +10,9 @@ M.setup = function()
     pattern = "*",
     callback = function()
       require("mini.trailspace").trim()
-      --local last_non_empty_line = vim.fn.prevnonblank(vim.fn.line('$'))
-      --vim.cmd(string.format("silent! %d,$d", last_non_empty_line + 1))
-      --vim.cmd("silent! $put _")
+      local last_non_empty_line = vim.fn.prevnonblank(vim.fn.line "$")
+      vim.cmd(string.format("silent! %d,$d", last_non_empty_line + 1))
+      vim.cmd "silent! $put _"
     end,
   })
 end

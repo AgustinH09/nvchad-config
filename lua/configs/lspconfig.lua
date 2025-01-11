@@ -18,11 +18,13 @@ local lspconfig = require "lspconfig"
 
 -- list of all servers configured.
 lspconfig.servers = {
-  "lua_ls",
-  "html",
   "cssls",
   "gopls",
+  "harper_ls",
+  "html",
+  "lua_ls",
   "ruby_lsp",
+  "ts_ls",
 }
 
 -- list of servers configured with default config.
@@ -107,9 +109,9 @@ lspconfig.gopls.setup {
 -- ruby_ls
 lspconfig.ruby_lsp.setup {
   on_attach = function(client, bufnr)
-    -- Disable formatting if using an external formatter like conform.nvim
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.documentRangeFormattingProvider = false
+
     on_attach(client, bufnr)
   end,
   on_init = on_init,
@@ -126,4 +128,20 @@ lspconfig.ruby_lsp.setup {
       ignored_diagnostics = { "Layout/TrailingEmptyLines" },
     },
   },
+}
+
+-- tsserver setup
+lspconfig.ts_ls.setup {
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+
+    on_attach(client, bufnr)
+  end,
+  on_init = on_init,
+  capabilities = capabilities,
+  cmd = { "typescript-language-server", "--stdio" },
+  filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
+  root_dir = lspconfig.util.root_pattern("tsconfig.json", "package.json", ".git"),
+  settings = {},
 }

@@ -37,10 +37,3 @@ vim.schedule(function()
   require "configs.harpoon.mappings"
   require "configs.nvim-tree"
 end)
-
--- Own
-vim.opt.relativenumber = true
-vim.opt.number = true
-
--- Avante
-vim.opt.laststatus = 3
