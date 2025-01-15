@@ -1,7 +1,7 @@
 local lint = package.loaded["lint"]
 
 -- List of linters to ignore during install
-local ignore_install = { "golangcilint" }
+local ignore_install = { "golangcilint", "markdownlint-cli2" }
 
 -- Helper function to find if value is in table.
 local function table_contains(table, value)

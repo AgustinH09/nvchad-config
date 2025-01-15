@@ -13,6 +13,7 @@ lint.linters_by_ft = {
   less = { "stylelint" },
   json = { "jsonlint" },
   go = { "golangcilint" },
+  markdwon = { "markdownlint-cli2" },
 }
 
 lint.linters.luacheck.args = {
