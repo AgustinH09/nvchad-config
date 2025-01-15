@@ -13,6 +13,8 @@ lspconfig.servers = {
   "lua_ls",
   "ruby_lsp",
   "ts_ls",
+  "markdown_oxide",
+  "marksman",
 }
 
 -- list of servers configured with default config.
@@ -116,4 +118,20 @@ lspconfig.ts_ls.setup {
   filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
   root_dir = lspconfig.util.root_pattern("tsconfig.json", "package.json", ".git"),
   settings = {},
+}
+
+lspconfig.markdown_oxide.setup {
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+
+    on_attach(client, bufnr)
+  end,
+  capabilities = vim.tbl_deep_extend("force", capabilities, {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
+      },
+    },
+  }),
 }

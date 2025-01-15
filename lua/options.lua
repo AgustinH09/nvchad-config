@@ -16,3 +16,6 @@ vim.opt.number = true
 
 -- Avante
 vim.opt.laststatus = 3
+
+-- Obisdian
+vim.opt.conceallevel = 1

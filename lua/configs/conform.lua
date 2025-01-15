@@ -8,6 +8,7 @@ local options = {
     javascript = { "prettier" },
     typescript = { "prettier" },
     node = { "prettier" },
+    markdown = { "cbfmt", "markdownlint-cli2" },
   },
 
   formatters = {

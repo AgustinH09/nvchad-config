@@ -9,7 +9,7 @@ return {
       history = 500,
       enable_persistent_history = true,
       continous_sync = false,
-      --db_path = "/databases/neoclip.sqlite3",
+      db_path = "/databases/neoclip.sqlite3",
       preview = true,
 
     })

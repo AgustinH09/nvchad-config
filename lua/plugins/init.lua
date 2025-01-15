@@ -1,5 +1,5 @@
 return {
-  require "plugins.nvim-telescope.telescope-frecency",
+  -- require "plugins.nvim-telescope.telescope-frecency",
 
   {
     "nvim-treesitter/nvim-treesitter",
@@ -88,3 +88,4 @@ return {
     },
   },
 }
+
