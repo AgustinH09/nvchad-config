@@ -3,9 +3,9 @@ local lint = require "lint"
 lint.linters_by_ft = {
   lua = { "luacheck" },
   ruby = { "rubocop" },
-  typescript = { "eslint_d" },
-  javascript = { "eslint_d" },
-  node = { "eslint_d" },
+  typescript = { "eslint_d", "biome" },
+  javascript = { "eslint_d", "biome" },
+  node = { "eslint_d", "biome" },
   html = { "htmlhint" },
   css = { "stylelint" },
   scss = { "stylelint" },
@@ -14,6 +14,8 @@ lint.linters_by_ft = {
   json = { "jsonlint" },
   go = { "golangcilint" },
   markdwon = { "markdownlint-cli2" },
+  terraform = { "tflint", "tfsec" },
+  hcl = { "tflint", "tfsec" },
 }
 
 lint.linters.luacheck.args = {

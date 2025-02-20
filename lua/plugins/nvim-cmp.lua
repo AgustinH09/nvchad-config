@@ -47,18 +47,20 @@ return {
     table.insert(opts.sources, 1, { name = "copilot", group_index = 2 })
 
     opts.formatting = {
-      format = function(entry, vim_item)
-        local highlights_info = require("colorful-menu").cmp_highlights(entry)
-
-        -- if highlight_info==nil, which means missing ts parser, let's fallback to use default `vim_item.abbr`.
-        -- What this plugin offers is two fields: `vim_item.abbr_hl_group` and `vim_item.abbr`.
-        if highlights_info ~= nil then
-          vim_item.abbr_hl_group = highlights_info.highlights
-          vim_item.abbr = highlights_info.text
-        end
-
-        return vim_item
-      end,
+      format = require("lspkind").cmp_format {
+        mode = "symbol", -- show only symbol annotations
+        maxwidth = { menu = 50, abbr = 50 },
+        ellipsis_char = "...",
+        show_labelDetails = true,
+        before = function(entry, vim_item)
+          local highlights_info = require("colorful-menu").cmp_highlights(entry)
+          if highlights_info then
+            vim_item.abbr_hl_group = highlights_info.highlights
+            vim_item.abbr = highlights_info.text
+          end
+          return vim_item
+        end,
+      },
     }
   end,
 }
