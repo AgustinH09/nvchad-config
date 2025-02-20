@@ -39,14 +39,10 @@ vim.schedule(function()
 end)
 
 -- Enable persistent undo
-if vim.fn.has "persistent_undo" == 1 then
-  local undodir = vim.fn.expand "~/.undodir"
-
-  -- Create directory if it doesn't exist
-  if vim.fn.isdirectory(undodir) == 0 then
-    vim.fn.mkdir(undodir, "p", "0700")
-  end
-
-  vim.opt.undodir = undodir
-  vim.opt.undofile = true
+local undo_dir = "/tmp/nvim-undo-dir"
+if vim.fn.isdirectory(undo_dir) == 0 then
+  vim.fn.mkdir(undo_dir, "p", tonumber("700", 8))
 end
+
+vim.opt.undodir = undo_dir
+vim.opt.undofile = true

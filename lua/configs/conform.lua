@@ -9,6 +9,7 @@ local options = {
     typescript = { "prettier" },
     node = { "prettier" },
     markdown = { "cbfmt", "markdownlint-cli2" },
+    terraform = { "terraform_fmt" },
   },
 
   formatters = {
