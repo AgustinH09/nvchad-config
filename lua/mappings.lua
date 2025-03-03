@@ -5,12 +5,45 @@ local map = vim.keymap.set
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
+map("n", "n", "nzzzv")
+map("n", "N", "Nzzzv")
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "quit" })
 map("n", "<leader>Q", "<cmd>q!<cr>", { desc = "force quit" })
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
---
--- Undotree
--- ["<leader>j"] = { "<cmd>UndotreeToggle<CR>", "Toggle Undotree"
+
+-- Paste in vs mode
+map("x", "<leader>p", [["_dP]])
+-- Delete without affecting the Y buffer
+map({ "n", "v" }, "<leader>d", [["_d]])
+-- Disable Ex mode
+map("n", "Q", "<nop>")
+
+-- Remove the default mappings
+vim.keymap.del("n", "<A-h>")
+vim.keymap.del("n", "<A-v>")
+
+-- MiniMove
+-- Move left
+map("n", "<M-h>", "<cmd>lua require('mini.move').move_line('left')<CR>", { desc = "Move line left" })
+map("v", "<M-h>", "<cmd>lua require('mini.move').move_selection('left')<CR>", { desc = "Move selection left" })
+
+-- Move right
+map("n", "<M-l>", "<cmd>lua require('mini.move').move_line('right')<CR>", { desc = "Move line right" })
+map("v", "<M-l>", "<cmd>lua require('mini.move').move_selection('right')<CR>", { desc = "Move selection right" })
+
+-- Move up
+map("n", "<M-k>", "<cmd>lua require('mini.move').move_line('up')<CR>", { desc = "Move line up" })
+map("v", "<M-k>", "<cmd>lua require('mini.move').move_selection('up')<CR>", { desc = "Move selection up" })
+
+-- Move down
+map("n", "<M-j>", "<cmd>lua require('mini.move').move_line('down')<CR>", { desc = "Move line down" })
+map("v", "<M-j>", "<cmd>lua require('mini.move').move_selection('down')<CR>", { desc = "Move selection down" })
+
+-- Terminals
+map("n", "<leader>th", "<cmd>split | terminal<CR>", { desc = "Horizontal Terminal", noremap = true, silent = true })
+map("n", "<leader>tv", "<cmd>vsplit | terminal<CR>", { desc = "Vertical Terminal", noremap = true, silent = true })
+
+----- Undotree
 map("n", "<leader>u", "<cmd>UndotreeToggle<CR>", { desc = "Toggle Undotree" })
 
 -- LSP
@@ -19,45 +52,75 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local opts = { buffer = event.buf, noremap = true, silent = true }
 
     -- Go to definition
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    map("n", "gd", vim.lsp.buf.definition, opts)
     -- Go to declaration
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+    map("n", "gD", vim.lsp.buf.declaration, opts)
     -- Go to implementation
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+    map("n", "gi", vim.lsp.buf.implementation, opts)
     -- Go to type definition
-    vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
+    map("n", "gt", vim.lsp.buf.type_definition, opts)
     -- Show hover information
-    -- vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    -- map("n", "K", vim.lsp.buf.hover, opts)
     -- Show signature help
-    vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+    -- map("n", "<C-k>", vim.lsp.buf.signature_help, opts)
     -- List references
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    map("n", "gr", vim.lsp.buf.references, opts)
     -- Rename symbol
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    map("n", "<leader>rn", vim.lsp.buf.rename, opts)
     -- Code action
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-    -- Format document
-    vim.keymap.set("n", "<leader>f", function()
-      vim.lsp.buf.format { async = true }
+    -- map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    map("n", "<leader>f", function()
+      require("conform").format { lsp_fallback = true }
     end, opts)
     -- Diagnostics
-    vim.keymap.set("n", "gl", vim.diagnostic.open_float, opts)
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+    map("n", "gl", vim.diagnostic.open_float, opts)
+    map("n", "[d", vim.diagnostic.goto_prev, opts)
+    map("n", "]d", vim.diagnostic.goto_next, opts)
   end,
 })
 
 ----- OBSIDIAN -----
-vim.keymap.set(
-  "n",
-  "<leader>oc",
-  "<cmd>lua require('obsidian').util.toggle_checkbox()<CR>",
-  { desc = "Obsidian Check Checkbox" }
-)
-vim.keymap.set("n", "<leader>ot", "<cmd>ObsidianTemplate<CR>", { desc = "Insert Obsidian Template" })
-vim.keymap.set("n", "<leader>oo", "<cmd>ObsidianOpen<CR>", { desc = "Open in Obsidian App" })
-vim.keymap.set("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Show ObsidianBacklinks" })
-vim.keymap.set("n", "<leader>ol", "<cmd>ObsidianLinks<CR>", { desc = "Show ObsidianLinks" })
-vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "Create New Note" })
-vim.keymap.set("n", "<leader>os", "<cmd>ObsidianSearch<CR>", { desc = "Search Obsidian" })
-vim.keymap.set("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick Switch" })
+map("n", "<leader>oc", "<cmd>lua require('obsidian').util.toggle_checkbox()<CR>", { desc = "Obsidian Check Checkbox" })
+map("n", "<leader>ot", "<cmd>ObsidianTemplate<CR>", { desc = "Insert Obsidian Template" })
+map("n", "<leader>oo", "<cmd>ObsidianOpen<CR>", { desc = "Open in Obsidian App" })
+map("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Show ObsidianBacklinks" })
+map("n", "<leader>ol", "<cmd>ObsidianLinks<CR>", { desc = "Show ObsidianLinks" })
+map("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "Create New Note" })
+map("n", "<leader>os", "<cmd>ObsidianSearch<CR>", { desc = "Search Obsidian" })
+map("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick Switch" })
+
+----- GoDoc ----
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "go",
+  callback = function()
+    vim.api.nvim_buf_set_keymap(
+      0,
+      "n",
+      "<leader>gd",
+      ":GoDoc<CR>",
+      { desc = "Open GoDocs in Telescope", noremap = true, silent = true }
+    )
+  end,
+})
+
+------ Celluar Automaton ----
+map("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>")
+
+------ Tmux -----
+-- Navigation (moving between nvim splits and tmux panes)
+map("n", "<C-h>", "<cmd>lua require('tmux').move_left()<cr>", { desc = "Move to left tmux pane" })
+map("n", "<C-j>", "<cmd>lua require('tmux').move_bottom()<cr>", { desc = "Move to bottom tmux pane" })
+map("n", "<C-k>", "<cmd>lua require('tmux').move_top()<cr>", { desc = "Move to top tmux pane" })
+map("n", "<C-l>", "<cmd>lua require('tmux').move_right()<cr>", { desc = "Move to right tmux pane" })
+
+-- Resize (adjusting tmux pane sizes) with Alt + Arrow keys
+map("n", "<M-Left>", "<cmd>lua require('tmux').resize_left()<cr>", { desc = "Resize left tmux pane" })
+map("n", "<M-Down>", "<cmd>lua require('tmux').resize_bottom()<cr>", { desc = "Resize bottom tmux pane" })
+map("n", "<M-Up>", "<cmd>lua require('tmux').resize_top()<cr>", { desc = "Resize top tmux pane" })
+map("n", "<M-Right>", "<cmd>lua require('tmux').resize_right()<cr>", { desc = "Resize right tmux pane" })
+
+-- Swap (swapping positions with adjacent tmux panes)
+map("n", "<C-M-h>", "<cmd>lua require('tmux').swap_left()<cr>", { desc = "Swap with left tmux pane" })
+map("n", "<C-M-j>", "<cmd>lua require('tmux').swap_bottom()<cr>", { desc = "Swap with bottom tmux pane" })
+map("n", "<C-M-k>", "<cmd>lua require('tmux').swap_top()<cr>", { desc = "Swap with top tmux pane" })
+map("n", "<C-M-l>", "<cmd>lua require('tmux').swap_right()<cr>", { desc = "Swap with right tmux pane" })

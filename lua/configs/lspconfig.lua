@@ -19,18 +19,19 @@ local lspconfig = require "lspconfig"
 -- list of all servers configured.
 lspconfig.servers = {
   "cssls",
+  "eslint",
   "gopls",
   "harper_ls",
   "html",
   "lua_ls",
   "ruby_lsp",
-  "ts_ls",
+  -- "ts_ls",
   "markdown_oxide",
   "marksman",
 }
 
 -- list of servers configured with default config.
-local default_servers = {}
+local default_servers = { "eslint" }
 
 -- read :h vim.lsp.config for changing options of lsp servers 
 -- lsps with default config
@@ -133,20 +134,20 @@ lspconfig.ruby_lsp.setup {
 }
 
 -- tsserver setup
-lspconfig.ts_ls.setup {
-  on_attach = function(client, bufnr)
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.documentRangeFormattingProvider = false
-
-    on_attach(client, bufnr)
-  end,
-  on_init = on_init,
-  capabilities = capabilities,
-  cmd = { "typescript-language-server", "--stdio" },
-  filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
-  root_dir = lspconfig.util.root_pattern("tsconfig.json", "package.json", ".git"),
-  settings = {},
-}
+-- lspconfig.ts_ls.setup {
+--   on_attach = function(client, bufnr)
+--     client.server_capabilities.documentFormattingProvider = false
+--     client.server_capabilities.documentRangeFormattingProvider = false
+--
+--     on_attach(client, bufnr)
+--   end,
+--   on_init = on_init,
+--   capabilities = capabilities,
+--   cmd = { "typescript-language-server", "--stdio" },
+--   filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
+--   root_dir = lspconfig.util.root_pattern("tsconfig.json", "package.json", ".git"),
+--   settings = {},
+-- }
 
 lspconfig.markdown_oxide.setup {
   on_attach = function(client, bufnr)

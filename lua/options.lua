@@ -19,3 +19,6 @@ vim.opt.laststatus = 3
 
 -- Obisdian
 vim.opt.conceallevel = 1
+
+-- Save and mantain cursor position
+-- Is in configs/mini/trailspace.lua
