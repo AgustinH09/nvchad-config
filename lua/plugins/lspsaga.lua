@@ -10,11 +10,14 @@ return {
     }
     local opts = { noremap = true, silent = true }
 
-    -- Enhanced LSP Finder (Better than using `gd`, `gr`, `gi` separately)
-    vim.keymap.set("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", opts)
-
-    -- Peek Definition (Keep `gd` for direct jumps, but add this alternative)
-    vim.keymap.set("n", "gp", "<cmd>Lspsaga peek_definition<CR>", opts)
+    -- Enhanced LSP Finder & Peek Definition
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "c", "cpp", "lua", "rust", "go" },
+      callback = function()
+        vim.keymap.set("n", "gh", "<cmd>Lspsaga finder ++normal tyd+ref+imp+def<CR>", opts)
+        vim.keymap.set("n", "gp", "<cmd>Lspsaga peek_definition<CR>", opts)
+      end,
+    })
 
     -- Show Outline (Symbol tree, useful for navigation)
     vim.keymap.set("n", "<leader>o", "<cmd>Lspsaga outline<CR>", opts)
@@ -29,10 +32,13 @@ return {
     -- Show Buffer Diagnostics
     vim.keymap.set("n", "<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>", opts)
 
+    -- Show Workspace Diagnostics
+    vim.keymap.set("n", "<leader>sw", "<cmd>Lspsaga show_workspace_diagnostics<CR>", opts)
+
     -- Floating Hover Doc (Scrollable)
     vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
 
-    -- Floating Terminal (Only if you need a built-in terminal)
+    -- Floating Termina
     vim.keymap.set("n", "<leader>t", "<cmd>Lspsaga term_toggle<CR>", opts)
   end,
   dependencies = {
