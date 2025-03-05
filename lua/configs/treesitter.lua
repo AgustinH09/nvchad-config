@@ -2,31 +2,31 @@ local options = {
   ensure_installed = {
     "bash",
     "css",
-    "fish",
     "go",
     "gomod",
-    "gosun",
+    "gosum",
     "gotmpl",
     "gowork",
     "hcl",
-    "help",
     "html",
     "javascript",
-    "latex",
     "lua",
     "luadoc",
     "markdown",
     "markdown_inline",
-    "node",
     "printf",
     "ruby",
     "toml",
     "terraform",
     "typescript",
+    "tsx",
     "vim",
     "vimdoc",
     "yaml",
   },
+
+  sync_install = false,
+  auto_install = true,
 
   highlight = {
     enable = true,
@@ -34,6 +34,7 @@ local options = {
   },
 
   indent = { enable = true },
+  textobjects = require "configs.treesitter-textobjects",
 }
 
 require("nvim-treesitter.configs").setup(options)

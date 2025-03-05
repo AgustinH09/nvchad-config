@@ -20,7 +20,7 @@ return {
     })
 
     -- Show Outline (Symbol tree, useful for navigation)
-    vim.keymap.set("n", "<leader>o", "<cmd>Lspsaga outline<CR>", opts)
+    -- vim.keymap.set("n", "<leader>o", "<cmd>Lspsaga outline<CR>", opts)
 
     -- Diagnostic Jump with Severity Filtering
     vim.keymap.set("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
