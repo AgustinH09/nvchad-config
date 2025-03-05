@@ -4,6 +4,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPre", "BufNewFile" },
+    build = ":TSUpdate",
     config = function()
       require "configs.treesitter"
     end,
@@ -25,6 +26,24 @@ return {
     cmd = "Telescope",
     opts = function()
       return require "nvchad.configs.telescope"
+    end,
+  },
+
+  {
+    "nvim-tree/nvim-tree.lua",
+    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    opts = function()
+      local default_opts = require "nvchad.configs.nvimtree"
+      local custom_opts = {
+        filters = { dotfiles = true },
+        sync_root_with_cwd = true,
+        respect_buf_cwd = true,
+        update_focused_file = {
+          enable = true,
+          update_root = true,
+        },
+      }
+      return vim.tbl_deep_extend("force", default_opts, custom_opts)
     end,
   },
 

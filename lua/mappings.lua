@@ -1,6 +1,7 @@
 require "nvchad.mappings"
 
 local map = vim.keymap.set
+local delete = vim.keymap.del
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<C-d>", "<C-d>zz")
@@ -19,8 +20,11 @@ map({ "n", "v" }, "<leader>d", [["_d]])
 map("n", "Q", "<nop>")
 
 -- Remove the default mappings
-vim.keymap.del("n", "<A-h>")
-vim.keymap.del("n", "<A-v>")
+delete("n", "S")
+delete("n", "<A-h>")
+delete("n", "<A-v>")
+delete("n", "<C-s>")
+delete("n", "<leader>n")
 
 -- MiniMove
 -- Move left
@@ -124,3 +128,27 @@ map("n", "<C-M-h>", "<cmd>lua require('tmux').swap_left()<cr>", { desc = "Swap w
 map("n", "<C-M-j>", "<cmd>lua require('tmux').swap_bottom()<cr>", { desc = "Swap with bottom tmux pane" })
 map("n", "<C-M-k>", "<cmd>lua require('tmux').swap_top()<cr>", { desc = "Swap with top tmux pane" })
 map("n", "<C-M-l>", "<cmd>lua require('tmux').swap_right()<cr>", { desc = "Swap with right tmux pane" })
+
+----- Zen Mode -----
+map("n", "<leader>zm", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
+
+----- Quickfix -----
+map("n", "<C-q>", function()
+  require("quicker").toggle()
+end, {
+  desc = "Toggle quickfix",
+})
+
+map("n", "<leader>l", function()
+  require("quicker").toggle { loclist = true }
+end, { desc = "Toggle loclist" })
+
+---- NvimTree -----
+map({ "n", "v", "x" }, "<leader>fc", function()
+  require("nvim-tree.api").tree.find_file { open = true, focus = false }
+end, { desc = "Current File in NvimTree" })
+
+---- Projects -----
+map("n", "<leader>fp", function()
+  require("telescope").extensions.projects.projects {}
+end, { desc = "Open Telescope Projects Picker" })
