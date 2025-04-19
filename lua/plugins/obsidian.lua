@@ -1,5 +1,5 @@
 return {
-  "epwalsh/obsidian.nvim",
+  "obsidian-nvim/obsidian.nvim",
   version = "*", -- recommended, use latest release instead of latest commit
   lazy = true,
   ft = "markdown",
@@ -99,6 +99,10 @@ return {
       date_format = "%Y-%m-%d-%a", -- Date format for templates
       gtime_format = "%H:%M", -- Time format for templates
       tags = "", -- Default tags for templates
+    },
+
+    ui = {
+      enabled = false,
     },
   },
 }

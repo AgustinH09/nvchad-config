@@ -4,5 +4,6 @@ return {
   event = "VeryLazy",
   opts = {
     notifications = true,
+    excluded_lsp_clients = { "copilot" },
   },
 }

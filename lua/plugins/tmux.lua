@@ -27,7 +27,7 @@ return {
         -- overwrites vim.g.clipboard to redirect * and + to the system
         -- clipboard using tmux. If you sync your system clipboard without tmux,
         -- disable this option!
-        sync_clipboard = true,
+        sync_clipboard = false,
 
         -- synchronizes registers *, +, unnamed, and 0 till 9 with tmux buffers.
         sync_registers = true,
@@ -47,31 +47,18 @@ return {
         sync_unnamed = true,
       },
       navigation = {
-        -- cycles to opposite pane while navigating into the border
         cycle_navigation = true,
-
-        -- enables default keybindings (C-hjkl) for normal mode
         enable_default_keybindings = true,
-
-        -- prevents unzoom tmux when navigating beyond vim border
         persist_zoom = false,
       },
       resize = {
-        -- enables default keybindings (A-hjkl) for normal mode
-        enable_default_keybindings = true,
-
-        -- sets resize steps for x axis
+        enable_default_keybindings = false,
         resize_step_x = 1,
-
-        -- sets resize steps for y axis
         resize_step_y = 1,
       },
       swap = {
-        -- cycles to opposite pane while navigating into the border
         cycle_navigation = false,
-
-        -- enables default keybindings (C-A-hjkl) for normal mode
-        enable_default_keybindings = true,
+        enable_default_keybindings = false,
       },
     }
   end,
