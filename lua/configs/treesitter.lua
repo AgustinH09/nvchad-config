@@ -10,6 +10,7 @@ local options = {
     "hcl",
     "html",
     "javascript",
+    "json",
     "lua",
     "luadoc",
     "markdown",

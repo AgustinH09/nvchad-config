@@ -1,5 +1,6 @@
 return {
   "xzbdmw/clasp.nvim",
+  enabled = false,
   config = function()
     require("clasp").setup {
       pairs = { ["{"] = "}", ['"'] = '"', ["'"] = "'", ["("] = ")", ["["] = "]", ["<"] = ">" },

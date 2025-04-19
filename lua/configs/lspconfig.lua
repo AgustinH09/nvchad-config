@@ -18,6 +18,7 @@ local lspconfig = require "lspconfig"
 
 -- list of all servers configured.
 lspconfig.servers = {
+  "biome",
   "cssls",
   "eslint",
   "gopls",
@@ -96,7 +97,25 @@ lspconfig.gopls.setup {
   capabilities = capabilities,
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gotmpl", "gowork" },
-  root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+  single_file_support = true,
+  root_dir = function(fname)
+    -- see: https://github.com/neovim/nvim-lspconfig/issues/804
+    if not mod_cache then
+      local result = async.run_command { "go", "env", "GOMODCACHE" }
+      if result and result[1] then
+        mod_cache = vim.trim(result[1])
+      else
+        mod_cache = vim.fn.system "go env GOMODCACHE"
+      end
+    end
+    if mod_cache and fname:sub(1, #mod_cache) == mod_cache then
+      local clients = vim.lsp.get_clients { name = "gopls" }
+      if #clients > 0 then
+        return clients[#clients].config.root_dir
+      end
+    end
+    return util.root_pattern("go.work", "go.mod", ".git")(fname)
+  end,
   settings = {
     gopls = {
       analyses = {
@@ -120,7 +139,7 @@ lspconfig.ruby_lsp.setup {
   on_init = on_init,
   capabilities = capabilities,
   cmd = { "ruby-lsp" },
-  filetypes = { "ruby" },
+  filetypes = { "ruby", "eruby" },
   root_dir = lspconfig.util.root_pattern("Gemfile", ".git"),
   settings = {
     ruby = {
@@ -131,6 +150,7 @@ lspconfig.ruby_lsp.setup {
       ignored_diagnostics = { "Layout/TrailingEmptyLines" },
     },
   },
+  single_file_support = true,
 }
 
 -- tsserver setup
@@ -163,4 +183,35 @@ lspconfig.markdown_oxide.setup {
       },
     },
   }),
+}
+
+lspconfig.biome.setup {
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+    on_attach(client, bufnr)
+  end,
+  capabilities = vim.tbl_deep_extend("force", capabilities, {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
+      },
+    },
+  }),
+  cmd = { "biome", "lsp-proxy" },
+  filetypes = {
+    "astro",
+    "css",
+    "graphql",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "jsonc",
+    "svelte",
+    "typescript",
+    "typescript.tsx",
+    "typescriptreact",
+    "vue",
+  },
+  single_file_support = false,
 }
