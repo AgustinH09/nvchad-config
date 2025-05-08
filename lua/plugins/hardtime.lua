@@ -4,18 +4,19 @@ return {
   event = "BufReadPre",
   opts = {
     disable_filetypes = { "qf", "netrw", "NvimTree", "lazy", "mason", "oil" },
-    restricted_keys = {
-      ["h"] = {},
-      ["j"] = {},
-      ["k"] = {},
-      ["l"] = {},
-    },
-    disabled_keys = {
-      ["h"] = {},
-      ["j"] = {},
-      ["k"] = {},
-      ["l"] = {},
-    },
+    -- restricted_keys = {
+    --   ["h"] = {},
+    --   ["j"] = {},
+    --   ["k"] = {},
+    --   ["l"] = {},
+    -- },
+    max_count = 20,
+    -- disabled_keys = {
+    --   ["h"] = {},
+    --   ["j"] = {},
+    --   ["k"] = {},
+    --   ["l"] = {},
+    -- },
     disable_mouse = false,
   },
 }

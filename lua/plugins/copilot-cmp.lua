@@ -1,5 +1,6 @@
 return {
   "zbirenbaum/copilot-cmp",
+  enabled = false,
   event = { "InsertEnter", "LspAttach" },
   dependencies = { "hrsh7th/nvim-cmp", "zbirenbaum/copilot.lua" },
   config = function()
@@ -27,4 +28,3 @@ return {
     }
   end,
 }
-

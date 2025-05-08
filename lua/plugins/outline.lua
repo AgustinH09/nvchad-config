@@ -6,6 +6,11 @@ return {
     { "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
   },
   opts = {
-    -- Your setup opts here
+    outline_window = {
+      show_relative_numbers = true,
+    },
+    symbols = {
+      icon_source = "lspkind",
+    },
   },
 }

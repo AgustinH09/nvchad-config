@@ -5,7 +5,8 @@ return {
   ft = "markdown",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "hrsh7th/nvim-cmp",
+    "saghen/blink.cmp",
+    -- "hrsh7th/nvim-cmp",
     "nvim-telescope/telescope.nvim",
     "nvim-treesitter/nvim-treesitter",
   },
@@ -22,10 +23,9 @@ return {
     },
 
     completion = {
-      -- Set to false to disable completion.
-      nvim_cmp = true,
-      -- Trigger completion at 2 chars.
-      min_chars = 2,
+      nvim_cmp = false,
+      blink_cmp = true,
+      min_chars = 1,
     },
     notes_subdir = "4. Archives", -- Subdirectory for notes
     new_notes_location = "4. Archives", -- Location for new notes

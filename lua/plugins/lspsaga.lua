@@ -1,49 +1,35 @@
 return {
   "nvimdev/lspsaga.nvim",
-  event = "LspAttach",
-  ft = { "c", "cpp", "lua", "rust", "go" },
+  dependencies = {
+    "neovim/nvim-lspconfig",
+    "nvim-treesitter/nvim-treesitter",
+    "nvim-tree/nvim-web-devicons",
+  },
+  cmd = { "Lspsaga" },
+  keys = {
+    { "gh", "<cmd>Lspsaga finder ++normal tyd+ref+imp+def<CR>", desc = "LSP Finder" },
+    { "gp", "<cmd>Lspsaga peek_definition<CR>", desc = "Peek Definition" },
+    { "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", desc = "Prev Diagnostic" },
+    { "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", desc = "Next Diagnostic" },
+    { "<leader>sl", "<cmd>Lspsaga show_line_diagnostics<CR>", desc = "Line Diagnostics" },
+    { "<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>", desc = "Buffer Diagnostics" },
+    { "<leader>sw", "<cmd>Lspsaga show_workspace_diagnostics<CR>", desc = "Workspace Diagnostics" },
+    { "K", "<cmd>Lspsaga hover_doc<CR>", desc = "Hover Doc" },
+    { "<leader>t", "<cmd>Lspsaga term_toggle<CR>", desc = "Toggle Terminal" },
+    { "<leader>ca", "<cmd>Lspsaga code_action<CR>", desc = "Code Action" },
+  },
   config = function()
     require("lspsaga").setup {
-      lightbulb = {
-        enable = false,
+      lightbulb = { enable = false },
+      code_action = {
+        num_shortcut = true,
+        show_server_name = false,
+        extend_gitsigns = true,
+        keys = {
+          quit = "q",
+          exec = "<CR>",
+        },
       },
     }
-    local opts = { noremap = true, silent = true }
-
-    -- Enhanced LSP Finder & Peek Definition
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "c", "cpp", "lua", "rust", "go" },
-      callback = function()
-        vim.keymap.set("n", "gh", "<cmd>Lspsaga finder ++normal tyd+ref+imp+def<CR>", opts)
-        vim.keymap.set("n", "gp", "<cmd>Lspsaga peek_definition<CR>", opts)
-      end,
-    })
-
-    -- Show Outline (Symbol tree, useful for navigation)
-    -- vim.keymap.set("n", "<leader>o", "<cmd>Lspsaga outline<CR>", opts)
-
-    -- Diagnostic Jump with Severity Filtering
-    vim.keymap.set("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
-    vim.keymap.set("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
-
-    -- Show Line Diagnostics (Improved floating diagnostics)
-    vim.keymap.set("n", "<leader>sl", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
-
-    -- Show Buffer Diagnostics
-    vim.keymap.set("n", "<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>", opts)
-
-    -- Show Workspace Diagnostics
-    vim.keymap.set("n", "<leader>sw", "<cmd>Lspsaga show_workspace_diagnostics<CR>", opts)
-
-    -- Floating Hover Doc (Scrollable)
-    vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
-
-    -- Floating Termina
-    vim.keymap.set("n", "<leader>t", "<cmd>Lspsaga term_toggle<CR>", opts)
   end,
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter", -- optional
-    "nvim-tree/nvim-web-devicons", -- optional
-    "neovim/nvim-lspconfig",
-  },
 }

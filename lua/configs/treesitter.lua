@@ -9,6 +9,7 @@ local options = {
     "gowork",
     "hcl",
     "html",
+    "hyprlang",
     "javascript",
     "json",
     "lua",

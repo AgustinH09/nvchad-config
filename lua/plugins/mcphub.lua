@@ -5,9 +5,11 @@ return {
   },
   -- comment the following line to ensure hub will be ready at the earliest
   cmd = "MCPHub", -- lazy load by default
+  -- build = "bundled_build.lua",
   build = "npm install -g mcp-hub@latest",
   config = function()
     require("mcphub").setup {
+      -- use_bundled_binary = true,
       auto_toggle_mcp_servers = true,
       auto_approve = true,
       extensions = {

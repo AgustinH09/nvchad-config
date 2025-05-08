@@ -29,6 +29,9 @@ M({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without yanking" })
 -- disable Ex mode
 M("n", "Q", "<nop>", { desc = "Disable Ex mode" })
 
+-- Delete NvChad default mappings
+del("n", "<leader>ch")
+
 ----- MINIMOVE -----
 M("n", "<M-h>", function()
   mini_move.move_line "left"
@@ -108,7 +111,10 @@ M("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>", { desc = "Make i
 
 ----- TMUX NAVIGATOR (only if inside tmux) -----
 if vim.env.TMUX and vim.env.TMUX ~= "" then
-  pcall(require, "lazy").load { plugins = "tmux.nvim" }
+  local ok, lazy = pcall(require, "lazy")
+  if ok then
+    lazy.load { plugins = "tmux.nvim" }
+  end
 
   M("n", "<C-h>", "<cmd>lua require('tmux').move_left()<CR>", { desc = "← pane" })
   M("n", "<C-j>", "<cmd>lua require('tmux').move_bottom()<CR>", { desc = "↓ pane" })
@@ -146,3 +152,36 @@ end, { desc = "Find file in tree" })
 M("n", "<leader>fp", function()
   require("telescope").extensions.projects.projects {}
 end, { desc = "Telescope Projects" })
+
+----- LUA SNIPPETS -----
+local ls = require "luasnip"
+local extras = require "luasnip.extras"
+local feedkeys = vim.api.nvim_feedkeys
+local rep_tc = vim.api.nvim_replace_termcodes
+
+-- Expand or jump forward; otherwise insert a real Tab
+M({ "i", "s" }, "<Tab>", function()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  else
+    feedkeys(rep_tc("<Plug>(Tabout)", true, false, true), "n", true)
+  end
+end, { desc = "LuaSnip expand or jump" })
+
+-- Jump backwards; otherwise insert a real Shift-Tab
+M({ "i", "s" }, "<S-Tab>", function()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  else
+    feedkeys(rep_tc("<Plug>(TaboutBack)", true, false, true), "n", true)
+  end
+end, { desc = "LuaSnip jump backward" })
+
+-- Cycle through choice nodes, or fall back to normal <C-j> when not in a choice
+M("i", "<C-j>", function()
+  if ls.choice_active() then
+    extras.change_choice(1)
+  else
+    feedkeys(rep_tc("<C-j>", true, false, true), "n", true)
+  end
+end, { desc = "LuaSnip next choice" })

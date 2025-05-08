@@ -1,29 +1,13 @@
 return {
   "yetone/avante.nvim",
   event = "VeryLazy",
-  lazy = false,
-  version = false, -- set this if you want to always pull the latest change
+  version = false,
   opts = {
     provider = "openai",
     cursor_applying_provider = "openai",
-    behaviour = {
-      enable_cursor_planning_mode = true,
-    },
-    gemini = {
-      model = "gemini-1.5-pro",
-      max_tokens = 2097152,
-      -- models:
-      -- 1.5-pro: gemini-1.5-pro, max_tokens=2097152
-      -- 1.5-flash: gemini-1.5-flash, max_tokens=1048576
-      -- 2.0-flash: gemini-2.0-flash, max_tokens=1048576
-    },
     openai = {
       model = "gpt-4.1-2025-04-14",
-      -- models:
-      -- o1: o1-2024-12-17,
-      -- o1-mini: o1-mini-2024-09-12
-      -- 4-turbo: gpt-4-turbo-2024-04-09,
-      -- 3.5-turbo: gpt-3.5-turbo-2024-04-09
+      endpoint = "https://api.openai.com/v1",
       max_tokens = 32768,
       temperature = 0.7,
       timeout = 50000,
@@ -41,8 +25,7 @@ return {
     },
     web_search_engine = {
       provider = "tavily",
-      -- provider = "google",
-      proxy = nil, -- proxy support, e.g., http://127.0.0.1:7890
+      proxy = nil,
     },
     system_prompt = function()
       local hub = require("mcphub").get_hub_instance()
