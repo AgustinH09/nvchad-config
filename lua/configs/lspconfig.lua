@@ -2,6 +2,8 @@ require("nvchad.configs.lspconfig").defaults()
 -- load defaults i.e lua_lsp
 require("nvchad.configs.lspconfig").defaults()
 local on_attach = require("nvchad.configs.lspconfig").on_attach
+local on_attach = require("nvchad.configs.lspconfig").on_attach
+local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
@@ -14,20 +16,19 @@ local servers = { "html", "cssls" }
 local nvlsp = require "nvchad.configs.lspconfig"
 local lspconfig = require("lspconfig")
 local lspconfig = require("lspconfig")
+local on_attach = function(client, bufnr)
+  nv_on_attach(client, bufnr)
+  vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
+end
+
 local lspconfig = require "lspconfig"
 
 -- list of all servers configured.
 lspconfig.servers = {
-  "biome",
   "cssls",
   "eslint",
-  "gopls",
   "harper_ls",
   "html",
-  "lua_ls",
-  "ruby_lsp",
-  "ts_ls",
-  "markdown_oxide",
   "marksman",
 }
 
@@ -128,7 +129,7 @@ lspconfig.gopls.setup {
   },
 }
 
--- ruby_ls
+-- ruby_lsp
 lspconfig.ruby_lsp.setup {
   on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
@@ -151,6 +152,15 @@ lspconfig.ruby_lsp.setup {
     },
   },
   single_file_support = true,
+  init_options = {
+    ["Ruby LSP Rails"] = {
+      enablePendingMigrationsPrompt = false,
+    },
+    ["Ruby LSP Rspec"] = {
+      rspecCommand = "rspec -f d",
+    },
+    enabledFeatures = { "documentSymbols" },
+  },
 }
 
 -- tsserver setup
@@ -214,4 +224,14 @@ lspconfig.biome.setup {
     "vue",
   },
   single_file_support = false,
+}
+
+lspconfig.hyprls.setup {
+  cmd = { "hyprls" },
+  filetypes = { "hyprlang" },
+  root_dir = function()
+    return vim.fn.getenv "HOME" .. "/.config/hypr"
+  end,
+  settings = {},
+  on_attach = on_attach,
 }

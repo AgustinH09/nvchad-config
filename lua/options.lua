@@ -1,24 +1,41 @@
 require "nvchad.options"
 
--- add yours here!
-
---local o = vim.o
---o.cursorlineopt ='both' -- to enable cursorline!
-
+-- UI / UX tweaks
 vim.opt.mouse = "a"
--- Undercurl
-vim.cmd [[let &t_Cs = "\e[4:3m"]]
-vim.cmd [[let &t_Ce = "\e[4:0m"]]
-
--- Own
+vim.cmd [[let &t_Cs = "\e[4:3m"]] -- undercurl start
+vim.cmd [[let &t_Ce = "\e[4:0m"]] -- undercurl end
 vim.opt.relativenumber = true
 vim.opt.number = true
+vim.opt.laststatus = 3 -- global statusline
+vim.opt.conceallevel = 1 -- Obsidian-style concealing
 
--- Avante
-vim.opt.laststatus = 3
+-- Filetype detection
+vim.filetype.add {
+  extension = {
+    rasi = "rasi",
+    rofi = "rasi",
+    wofi = "rasi",
+  },
+  filename = {
+    vifmrc = "vim",
+    Gemfile = "ruby",
+    ["*.gemspec"] = "ruby",
+    Rakefile = "ruby",
+    Capfile = "ruby",
+  },
+  pattern = {
+    [".*/waybar/config"] = "jsonc",
+    [".*/mako/config"] = "dosini",
+    [".*/kitty/.+%.conf"] = "kitty",
+    [".*/hypr/.*%.conf"] = "hyprlang",
+    [".*/%.config/hypr/.+%.conf"] = "hyprlang",
+    ["%.env%.[%w_.-]+"] = "sh",
+  },
+}
 
--- Obisdian
-vim.opt.conceallevel = 1
+-- Treesitter enhancements
+vim.treesitter.language.register("bash", "kitty")
 
--- Save and mantain cursor position
--- Is in configs/mini/trailspace.lua
+-- LuaSnip load snippets
+require("luasnip.loaders.from_vscode").lazy_load()
+require("luasnip.loaders.from_vscode").lazy_load { paths = { "./snippets" } }
