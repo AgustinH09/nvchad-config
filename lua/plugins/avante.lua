@@ -5,12 +5,27 @@ return {
   opts = {
     provider = "openai",
     cursor_applying_provider = "openai",
-    openai = {
-      model = "gpt-4.1-2025-04-14",
-      endpoint = "https://api.openai.com/v1",
-      max_tokens = 32768,
-      temperature = 0.7,
-      timeout = 50000,
+    providers = {
+      openai = {
+        api_key = vim.env.OPENAI_API_KEY or "",
+        extra_request_body = {
+          temperature = 0.7,
+          top_p = 1.0,
+          frequency_penalty = 0.0,
+          presence_penalty = 0.0,
+          max_tokens = 16384,
+        },
+      },
+      copilot = {
+        api_key = vim.env.COPILOT_API_KEY or "",
+      },
+      claude = {
+        api_key = vim.env.CLAUDE_API_KEY or "",
+        extra_request_body = {
+          temperature = 0.7,
+          max_tokens_to_sample = 32768,
+        },
+      },
     },
     behaviour = {
       auto_suggestions = true, -- Experimental stage

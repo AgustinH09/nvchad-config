@@ -61,7 +61,7 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-lspconfig" },
+    dependencies = { "nvim-lspconfig", "mason-org/mason.nvim" },
     config = function()
       require "configs.mason-lspconfig"
     end,

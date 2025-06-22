@@ -1,27 +1,28 @@
-local lspconfig = package.loaded["lspconfig"]
+local lspconfig = require "lspconfig"
 
--- List of servers to ignore during install
+-- which of your lspconfig servers to skip installing
 local ignore_install = { "markdown-oxide" }
 
--- Helper function to find if value is in table.
-local function table_contains(table, value)
-  for _, v in ipairs(table) do
-    if v == value then
-      return true
-    end
-  end
-  return false
-end
-
--- Build a list of lsp servers to install minus the ignored list.
-local all_servers = {}
-for _, s in ipairs(lspconfig.servers) do
-  if not table_contains(ignore_install, s) then
-    table.insert(all_servers, s)
-  end
-end
+-- NOTE: Corrected "ts_ls" to "tsserver" in this list
+local to_install = vim.tbl_filter(function(name)
+  return not vim.tbl_contains(ignore_install, name)
+end, {
+  "biome",
+  "cssls",
+  "eslint",
+  "gopls",
+  "harper_ls",
+  "html",
+  "hyprls",
+  "jsonls",
+  "lua_ls",
+  "markdown-oxide",
+  "marksman",
+  "ruby_lsp",
+  "ts_ls",
+})
 
 require("mason-lspconfig").setup {
-  ensure_installed = all_servers,
-  automatic_installation = false,
+  ensure_installed = to_install,
+  automatic_enable = false,
 }
