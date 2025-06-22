@@ -1,14 +1,42 @@
 local M = {}
 
 M.setup = function()
-  require("mini.ai").setup {
-    -- Table with textobject id as fields, textobject specification as values.
-    -- Also use this to disable builtin textobjects. See |MiniAi.config|.
-    custom_textobjects = nil,
+  local gen_spec = require("mini.ai").gen_spec
+  local spec_pair = gen_spec.pair
 
-    -- Module mappings. Use `''` (empty string) to disable one.
+  local function pair(left, right)
+    if right == nil then
+      right = left
+    end
+
+    return spec_pair(left, right, { type = "balanced" })
+  end
+
+  local custom_textobjects = {
+    -- b = pair("(", ")"),
+    -- B = pair("{", "}"),
+    -- r = pair("[", "]"),
+    -- q = pair "'",
+    -- Q = pair '"',
+    -- a = pair "`",
+
+    f = gen_spec.treesitter { a = "@function.outer", i = "@function.inner" },
+    [";"] = gen_spec.treesitter { a = "@comment.outer", i = "@comment.outer" },
+
+    g = function()
+      return {
+        from = { line = 1, col = 1 },
+        to = {
+          line = vim.fn.line "$",
+          col = math.max(vim.fn.getline("$"):len(), 1),
+        },
+      }
+    end,
+  }
+  require("mini.ai").setup {
+    custom_textobjects = custom_textobjects,
+
     mappings = {
-      -- Main textobject prefixes
       around = "a",
       inside = "i",
 
@@ -18,22 +46,11 @@ M.setup = function()
       around_last = "al",
       inside_last = "il",
 
-      -- Move cursor to corresponding edge of `a` textobject
       goto_left = "g[",
       goto_right = "g]",
     },
-
-    -- Number of lines within which textobject is searched
     n_lines = 50,
-
-    -- How to search for object (first inside current line, then inside
-    -- neighborhood). One of 'cover', 'cover_or_next', 'cover_or_prev',
-    -- 'cover_or_nearest', 'next', 'previous', 'nearest'.
     search_method = "cover_or_next",
-
-    -- Whether to disable showing non-error feedback
-    -- This also affects (purely informational) helper messages shown after
-    -- idle time if user input is required.
     silent = false,
   }
 end

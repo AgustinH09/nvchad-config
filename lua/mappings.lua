@@ -26,11 +26,24 @@ M("x", "<leader>p", [["_dP]], { desc = "Paste without yanking" })
 -- delete without yanking
 M({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without yanking" })
 
+M("n", "<leader>gv", "`[v`]", { desc = "Visually select last paste/change" })
+
 -- disable Ex mode
 M("n", "Q", "<nop>", { desc = "Disable Ex mode" })
 
+M("n", "<C-c>", require "lua.functions.file_context", { desc = "Copy file with context for LLM" })
+
 -- Delete NvChad default mappings
 del("n", "<leader>ch")
+del("n", "<leader>th")
+
+-- Copy file & line paths to clipboard
+vim.keymap.set("n", "<leader>L", function()
+  local file = vim.fn.expand "%"
+  local line = vim.fn.line "."
+  vim.fn.setreg("+", string.format("%s:%d", file, line))
+  vim.notify "Copied line reference to clipboard"
+end, { desc = "Copy line reference to clipboard" })
 
 ----- MINIMOVE -----
 M("n", "<M-h>", function()
@@ -142,6 +155,16 @@ end, { desc = "Toggle quickfix" })
 M("n", "<leader>l", function()
   require("quicker").toggle { loclist = true }
 end, { desc = "Toggle loclist" })
+
+-- Default navigation for items
+M("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix item" })
+M("n", "[q", "<cmd>cprev<CR>", { desc = "Previous quickfix item" })
+-- Aux navigation for items
+M("n", "<M-n>", "<cmd>cnext<CR>", { desc = "Next quickfix item" })
+M("n", "<M-p>", "<cmd>cprev<CR>", { desc = "Previous quickfix item" })
+-- Navigation for lists (history)
+M("n", "<leader>]q", "<cmd>cnewer<CR>", { desc = "Newer quickfix list" })
+M("n", "<leader>[q", "<cmd>colder<CR>", { desc = "Older quickfix list" })
 
 ----- NVIMTREE -----
 M({ "n", "v", "x" }, "<leader>fc", function()
