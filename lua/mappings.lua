@@ -31,7 +31,7 @@ M("n", "<leader>gv", "`[v`]", { desc = "Visually select last paste/change" })
 -- disable Ex mode
 M("n", "Q", "<nop>", { desc = "Disable Ex mode" })
 
-M("n", "<C-c>", require "lua.functions.file_context", { desc = "Copy file with context for LLM" })
+M("n", "<C-c>", require "functions.file_context", { desc = "Copy file with context for LLM" })
 
 -- Delete NvChad default mappings
 del("n", "<leader>ch")

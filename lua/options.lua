@@ -7,7 +7,7 @@ vim.cmd [[let &t_Ce = "\e[4:0m"]] -- undercurl end
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.laststatus = 3 -- global statusline
-vim.opt.conceallevel = 1 -- Obsidian-style concealing
+vim.opt.conceallevel = 2 -- Obsidian-style concealing
 
 -- Filetype detection
 vim.filetype.add {

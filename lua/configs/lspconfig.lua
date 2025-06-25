@@ -3,6 +3,7 @@ require("nvchad.configs.lspconfig").defaults()
 require("nvchad.configs.lspconfig").defaults()
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_attach = require("nvchad.configs.lspconfig").on_attach
+-- FILE: lua/configs/lspconfig.lua --
 local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
@@ -24,8 +25,6 @@ end
 
 local lspconfig = require "lspconfig"
 local util = require "lspconfig.util"
-local mod_cache
-local add_ruby_deps_command = require "configs.functions.ruby_deps"
 
 local marksman_caps = vim.deepcopy(capabilities)
 marksman_caps.workspace = vim.tbl_extend("force", marksman_caps.workspace, {
@@ -60,40 +59,20 @@ local servers = {
     },
   },
 
-  -- Go
+  -- Go (Simplified)
   gopls = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
       on_attach(client, bufnr)
     end,
-    cmd = { "gopls" },
-    filetypes = { "go", "gomod", "gotmpl", "gowork" },
-    single_file_support = true,
-    root_dir = function(fname)
-      -- see: https://github.com/neovim/nvim-lspconfig/issues/804
-      if not mod_cache then
-        local result = vim.lsp.util.run_command { "go", "env", "GOMODCACHE" }
-        if result and result[1] then
-          mod_cache = vim.trim(result[1])
-        else
-          mod_cache = vim.fn.system "go env GOMODCACHE"
-        end
-      end
-      if mod_cache and fname:sub(1, #mod_cache) == mod_cache then
-        local clients = vim.lsp.get_clients { name = "gopls" }
-        if #clients > 0 then
-          return clients[#clients].config.root_dir
-        end
-      end
-      return util.root_pattern("go.work", "go.mod", ".git")(fname)
-    end,
     settings = {
       gopls = {
-        analyses = { unusedparams = true },
-        completeUnimported = true,
-        usePlaceholders = true,
+        analyses = {
+          unusedparams = true,
+        },
         staticcheck = true,
+        gofumpt = true, -- A common and recommended setting
       },
     },
   },
@@ -103,7 +82,7 @@ local servers = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
-      add_ruby_deps_command(client, bufnr)
+      require "configs.functions.ruby_deps"(client, bufnr)
       on_attach(client, bufnr)
     end,
     init_options = {
@@ -130,24 +109,13 @@ local servers = {
     },
   },
 
-  -- TypeScript / JavaScript
+  -- TypeScript / JavaScript (Corrected Name)
   ts_ls = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
       on_attach(client, bufnr)
     end,
-    cmd = { "typescript-language-server", "--stdio" },
-    filetypes = {
-      "typescript",
-      "typescriptreact",
-      "typescript.tsx",
-      "javascript",
-      "javascriptreact",
-      "javascript.jsx",
-    },
-    root_dir = util.root_pattern("tsconfig.json", "package.json", ".git"),
-    settings = {},
   },
 
   -- Biome (alternative JS/TS linter & formatter)
@@ -157,54 +125,24 @@ local servers = {
       client.server_capabilities.documentRangeFormattingProvider = false
       on_attach(client, bufnr)
     end,
-    capabilities = vim.tbl_deep_extend("force", capabilities, {
-      workspace = {
-        didChangeWatchedFiles = { dynamicRegistration = true },
-      },
-    }),
-    cmd = { "biome", "lsp-proxy" },
-    filetypes = {
-      "astro",
-      "css",
-      "graphql",
-      "javascript",
-      "javascriptreact",
-      "json",
-      "jsonc",
-      "svelte",
-      "typescript",
-      "typescript.tsx",
-      "typescriptreact",
-      "vue",
-    },
-    single_file_support = false,
   },
 
   -- Hypr configuration language
   hyprls = {
-    cmd = { "hyprls" },
-    filetypes = { "hyprlang" },
-    root_dir = function()
-      return vim.fn.getenv "HOME" .. "/.config/hypr"
-    end,
-    settings = {},
+    -- lspconfig defaults are sufficient here
   },
 
   -- Markdown
   marksman = {
     capabilities = marksman_caps,
   },
+
   markdown_oxide = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
       on_attach(client, bufnr)
     end,
-    capabilities = vim.tbl_deep_extend("force", capabilities, {
-      workspace = {
-        didChangeWatchedFiles = { dynamicRegistration = true },
-      },
-    }),
   },
 }
 
@@ -237,10 +175,11 @@ local default_servers = {}
 for _, lsp in ipairs(default_servers) do
   lspconfig[lsp].setup {
 for name, opts in pairs(servers) do
-  local cfg = vim.tbl_deep_extend("force", {
+  local server_opts = vim.tbl_deep_extend("force", {
     on_attach = on_attach,
     on_init = on_init,
     capabilities = capabilities,
   }, opts)
-  lspconfig[name].setup(cfg)
+
+  lspconfig[name].setup(server_opts)
 end
