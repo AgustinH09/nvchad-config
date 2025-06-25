@@ -1,35 +1,20 @@
-require("nvchad.configs.lspconfig").defaults()
--- load defaults i.e lua_lsp
-require("nvchad.configs.lspconfig").defaults()
-local on_attach = require("nvchad.configs.lspconfig").on_attach
-local on_attach = require("nvchad.configs.lspconfig").on_attach
--- FILE: lua/configs/lspconfig.lua --
 local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
-local servers = { "html", "cssls" }
-vim.lsp.enable(servers)
-local lspconfig = require "lspconfig"
-
--- EXAMPLE
-local servers = { "html", "cssls" }
-local nvlsp = require "nvchad.configs.lspconfig"
-local lspconfig = require("lspconfig")
-local lspconfig = require("lspconfig")
 -- wrap NVChad’s on_attach to remove that default <leader>ra binding
 local on_attach = function(client, bufnr)
   nv_on_attach(client, bufnr)
   vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
 end
 
-local lspconfig = require "lspconfig"
-local util = require "lspconfig.util"
-
 local marksman_caps = vim.deepcopy(capabilities)
 marksman_caps.workspace = vim.tbl_extend("force", marksman_caps.workspace, {
   workspaceFolders = false,
 })
+
+local lspconfig = require "lspconfig"
+local util = require "lspconfig.util"
 
 -- Define all servers and only specify the bits that differ from the default
 local servers = {
@@ -146,34 +131,6 @@ local servers = {
   },
 }
 
--- list of servers configured with default config.
-local default_servers = {}
-
--- read :h vim.lsp.config for changing options of lsp servers 
--- lsps with default config
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-  }
-end
-
--- configuring single server, example: typescript
--- lspconfig.ts_ls.setup {
---   on_attach = nvlsp.on_attach,
---   on_init = nvlsp.on_init,
---   capabilities = nvlsp.capabilities,
--- }
--- lsps with default config
-for _, lsp in ipairs(default_servers) do
-  lspconfig[lsp].setup {
--- list of servers configured with default config.
-local default_servers = {}
-
--- lsps with default config
-for _, lsp in ipairs(default_servers) do
-  lspconfig[lsp].setup {
 for name, opts in pairs(servers) do
   local server_opts = vim.tbl_deep_extend("force", {
     on_attach = on_attach,
