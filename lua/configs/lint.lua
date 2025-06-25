@@ -13,16 +13,14 @@ lint.linters_by_ft = {
   less = { "stylelint" },
   json = { "jsonlint" },
   go = { "golangcilint" },
-  markdwon = { "markdownlint-cli2" },
+  markdown = { "markdownlint-cli2" },
   terraform = { "tflint", "tfsec" },
   hcl = { "tflint", "tfsec" },
 }
 
-lint.linters.luacheck.args = {
-  table.unpack(lint.linters.luacheck.args),
-  "--globals",
-  "vim",
-}
+local luacheck_args = lint.linters.luacheck.args or {}
+vim.list_extend(luacheck_args, { "--globals", "vim" })
+lint.linters.luacheck.args = luacheck_args
 
 lint.linters.nilaway = {
   sourceName = "nilaway",
