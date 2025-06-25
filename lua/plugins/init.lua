@@ -58,9 +58,6 @@ return {
     end,
   },
 
-  -- test new blink
-  -- { import = "nvchad.blink.lazyspec" },
-
   {
     "williamboman/mason-lspconfig.nvim",
     event = "VeryLazy",
