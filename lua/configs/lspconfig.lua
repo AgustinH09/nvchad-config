@@ -1,4 +1,3 @@
--- FILE: lua/configs/lspconfig.lua --
 local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
@@ -9,13 +8,13 @@ local on_attach = function(client, bufnr)
   vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
 end
 
-local lspconfig = require "lspconfig"
-local util = require "lspconfig.util"
-
 local marksman_caps = vim.deepcopy(capabilities)
 marksman_caps.workspace = vim.tbl_extend("force", marksman_caps.workspace, {
   workspaceFolders = false,
 })
+
+local lspconfig = require "lspconfig"
+local util = require "lspconfig.util"
 
 -- Define all servers and only specify the bits that differ from the default
 local servers = {
