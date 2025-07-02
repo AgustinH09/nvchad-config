@@ -20,7 +20,7 @@ local function add_ruby_deps_command(client, bufnr)
       end
 
       vim.fn.setqflist(qf_list)
-      vim.cmd "copen"
+      pcall(vim.cmd, "copen")
     end, bufnr)
   end, {
     nargs = "?",

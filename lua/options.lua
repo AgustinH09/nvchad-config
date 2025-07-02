@@ -2,8 +2,14 @@ require "nvchad.options"
 
 -- UI / UX tweaks
 vim.opt.mouse = "a"
-vim.cmd [[let &t_Cs = "\e[4:3m"]] -- undercurl start
-vim.cmd [[let &t_Ce = "\e[4:0m"]] -- undercurl end
+if not vim.g.vscode then
+  pcall(vim.cmd, [[let &t_Cs = "\e[4:3m"]]) -- undercurl start
+  pcall(vim.cmd, [[let &t_Ce = "\e[4:0m"]]) -- undercurl end
+else
+  vim.cmd [[let &t_Cs = "\e[4:3m"]] -- undercurl start
+  vim.cmd [[let &t_Ce = "\e[4:0m"]] -- undercurl end
+end
+
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.laststatus = 3 -- global statusline

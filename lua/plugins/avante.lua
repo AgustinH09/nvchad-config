@@ -2,6 +2,7 @@ return {
   "yetone/avante.nvim",
   event = "VeryLazy",
   version = false,
+  enabled = true,
   dependencies = {
     "MeanderingProgrammer/mcphub.nvim",
     "stevearc/dressing.nvim",

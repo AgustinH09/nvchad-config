@@ -14,8 +14,8 @@ M.setup = function()
       local total_lines = vim.fn.line "$"
       if last_non_empty_line < total_lines then
         local cursor_pos = vim.api.nvim_win_get_cursor(0)
-        vim.cmd(string.format("silent! %d,$d", last_non_empty_line + 1))
-        vim.cmd "silent! $put _"
+        pcall(vim.cmd, string.format("silent! %d,$d", last_non_empty_line + 1))
+        pcall(vim.cmd, "silent! $put _")
         vim.api.nvim_win_set_cursor(0, cursor_pos)
       end
     end,
