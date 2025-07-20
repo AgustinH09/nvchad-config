@@ -6,7 +6,7 @@ return {
     require("copilot").setup {
       suggestion = { enabled = false },
       panel = { enabled = false },
-      copilot_node_command = "/home/chicha09/.local/share/mise/installs/node/22.17.0/bin/node",
+      copilot_node_command = "/home/chicha09/.local/share/mise/installs/node/24.3.0/bin/node",
       filetypes = {
         yaml = true,
         markdown = true,
