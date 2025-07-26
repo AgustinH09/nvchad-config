@@ -35,16 +35,23 @@ M("n", "Q", "<nop>", { desc = "Disable Ex mode" })
 M("n", "<C-c>", require "functions.file_context", { desc = "Copy file with context for LLM" })
 
 -- Copy file & line paths to clipboard
-M("n", "<leader>fL", function()
-  local file = vim.fn.expand "%"
-  local line = vim.fn.line "."
-  vim.fn.setreg("+", string.format("%s:%d", file, line))
-  vim.notify "Copied line reference to clipboard"
-end, { desc = "Copy line reference to clipboard" })
+-- M("n", "<leader>fL", function()
+--   local file = vim.fn.expand "%"
+--   local line = vim.fn.line "."
+--   vim.fn.setreg("+", string.format("%s:%d", file, line))
+--   vim.notify "Copied line reference to clipboard"
+-- end, { desc = "Copy line reference to clipboard" })
 
 -- Delete NvChad default mappings
 del("n", "<leader>ch")
 del("n", "<leader>th")
+del("n", "<leader>fm")
+
+----- BUFFER MANAGEMENT -----
+M("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close buffer" })
+M("n", "<leader>X", "<cmd>bd!<cr>", { desc = "Force close buffer" })
+-- M("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- M("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 
 ----- MINIMOVE -----
 M("n", "<M-h>", function()
@@ -96,18 +103,32 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- Refactoring
     M("n", "<leader>lr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-    M("n", "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
-    M("v", "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
+    -- Native LSP code actions (commented out in favor of LSPsaga)
+    -- M("n", "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
+    -- M("v", "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
 
-    -- Formatting
+    -- Formatting (Also available as <leader>Ff)
     M("n", "<leader>lf", function()
       require("conform").format { lsp_fallback = true }
     end, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
 
-    -- Diagnostics
-    M("n", "gl", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostics" }))
-    M("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
-    M("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+    -- Diagnostics (commented out in favor of LSPsaga)
+    -- M("n", "gl", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostics" }))
+    -- M("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
+    -- M("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+
+    -- Native diagnostics - keeping as alternatives with different keys
+    M(
+      "n",
+      "<leader>ll",
+      vim.diagnostic.open_float,
+      vim.tbl_extend("force", opts, { desc = "Show diagnostics (native)" })
+    )
+    M("n", "[D", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic (native)" }))
+    M("n", "]D", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic (native)" }))
+
+    -- Hover (commented out in favor of LSPsaga K mapping)
+    -- M("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
 
     -- LSP management
     M("n", "<leader>lh", function()
@@ -152,7 +173,7 @@ M("n", "<leader>gb", function()
 end, { desc = "Toggle git blame" })
 
 M("n", "<leader>gB", function()
-  require("gitsigns").blame_line({ full = true })
+  require("gitsigns").blame_line { full = true }
 end, { desc = "Full git blame" })
 
 M("n", "<leader>gd", function()
@@ -160,7 +181,7 @@ M("n", "<leader>gd", function()
 end, { desc = "Git diff" })
 
 M("n", "<leader>gD", function()
-  require("gitsigns").diffthis("~")
+  require("gitsigns").diffthis "~"
 end, { desc = "Git diff against last commit" })
 
 M("n", "<leader>gp", function()
@@ -202,6 +223,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "go",
   callback = function()
     M("n", "<leader>gd", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
+    M("n", "<leader>goA", "<cmd>GoAlternate<CR>", { desc = "Go alternate file (test <-> impl)" })
   end,
 })
 
@@ -272,6 +294,18 @@ vim.api.nvim_create_autocmd("FileType", {
     M("n", "<leader>rm", function()
       vim.cmd.RustLsp { "view", "mir" }
     end, { desc = "View MIR" })
+
+    -- Cargo commands
+    M("n", "<leader>Cb", "<cmd>Cargo build<cr>", { desc = "Cargo build" })
+    M("n", "<leader>Cr", "<cmd>Cargo run<cr>", { desc = "Cargo run" })
+    M("n", "<leader>Ct", "<cmd>Cargo test<cr>", { desc = "Cargo test" })
+    M("n", "<leader>Cc", "<cmd>Cargo check<cr>", { desc = "Cargo check" })
+    M("n", "<leader>Cl", "<cmd>Cargo clippy<cr>", { desc = "Cargo clippy" })
+    M("n", "<leader>Cf", "<cmd>Cargo fmt<cr>", { desc = "Cargo fmt" })
+    M("n", "<leader>Cd", "<cmd>RustDoc<cr>", { desc = "Search Rust docs" })
+    M("n", "<leader>Cp", "<cmd>RustPlayground<cr>", { desc = "Open in Playground" })
+    M("n", "<leader>Ca", ":CargoAddDep ", { desc = "Add dependency" })
+    M("n", "<leader>Cs", ":CrateSearch ", { desc = "Search crates.io" })
   end,
 })
 
@@ -330,6 +364,31 @@ M("n", "<M-p>", "<cmd>cprev<CR>", { desc = "Previous quickfix item" })
 -- Navigation for lists (history)
 M("n", "<leader>]q", "<cmd>cnewer<CR>", { desc = "Newer quickfix list" })
 M("n", "<leader>[q", "<cmd>colder<CR>", { desc = "Older quickfix list" })
+
+----- LINTING & DIAGNOSTICS -----
+M("n", "<leader>Ll", "<cmd>Lint<cr>", { desc = "Run linters" })
+M("n", "<leader>LL", function()
+  -- Show all diagnostics in quickfix
+  vim.diagnostic.setqflist()
+  vim.cmd "copen"
+end, { desc = "Diagnostics to quickfix" })
+
+M("n", "<leader>Lb", function()
+  -- Show buffer diagnostics in loclist
+  vim.diagnostic.setloclist()
+end, { desc = "Buffer diagnostics to loclist" })
+
+M("n", "<leader>Le", function()
+  -- Show only errors
+  vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR }
+  vim.cmd "copen"
+end, { desc = "Errors to quickfix" })
+
+M("n", "<leader>Lw", function()
+  -- Show only warnings
+  vim.diagnostic.setqflist { severity = vim.diagnostic.severity.WARN }
+  vim.cmd "copen"
+end, { desc = "Warnings to quickfix" })
 
 ----- FILE NAVIGATION -----
 -- NvimTree

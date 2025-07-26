@@ -31,9 +31,21 @@ return {
 
     -- Hooks for cleanup
     pre_save_cmds = {
-      "tabdo NvimTreeClose",
-      "tabdo TroubleClose",
-      "tabdo DapClose",
+      -- Only include commands that are guaranteed to exist
+      "silent! NvimTreeClose",
+      function()
+        -- Safe close of DAP UI if it exists
+        pcall(function()
+          require("dapui").close()
+        end)
+        -- Close all floating windows
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          local config = vim.api.nvim_win_get_config(win)
+          if config.relative ~= "" then
+            pcall(vim.api.nvim_win_close, win, false)
+          end
+        end
+      end,
     },
 
     post_restore_cmds = {},
@@ -65,18 +77,25 @@ return {
     { "<leader>sf", "<cmd>Telescope session-lens search_session<cr>", desc = "Find sessions" },
 
     -- Quick session switching
-    { "<leader>sl", "<cmd>SessionRestoreFromFile<cr>", desc = "Restore from file" },
-    { "<leader>sp", "<cmd>SessionPurgeOrphaned<cr>", desc = "Cleanup orphaned sessions" },
+    -- { "<leader>sl", "<cmd>SessionRestoreFromFile<cr>", desc = "Restore from file" },
+    -- { "<leader>sp", "<cmd>SessionPurgeOrphaned<cr>", desc = "Cleanup orphaned sessions" },
 
     -- Session info
-    { "<leader>si", function()
-      local session_name = require("auto-session").get_session_name()
-      if session_name and session_name ~= "" then
-        vim.notify("Current session: " .. session_name, vim.log.levels.INFO)
-      else
-        vim.notify("No active session", vim.log.levels.WARN)
-      end
-    end, desc = "Show session info" },
+    {
+      "<leader>si",
+      function()
+        local cwd = vim.fn.getcwd()
+        local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+        local session_name = cwd:match("([^/]+)$") or "unknown"
+
+        if branch ~= "" then
+          vim.notify(string.format("Project: %s (branch: %s)", session_name, branch), vim.log.levels.INFO)
+        else
+          vim.notify("Project: " .. session_name, vim.log.levels.INFO)
+        end
+      end,
+      desc = "Show session info",
+    },
   },
 
   config = function(_, opts)
@@ -86,6 +105,6 @@ return {
     require("auto-session").setup(opts)
 
     -- Load telescope extension
-    require("telescope").load_extension("session-lens")
+    require("telescope").load_extension "session-lens"
   end,
 }

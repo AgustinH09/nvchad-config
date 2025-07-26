@@ -8,12 +8,30 @@ vim.diagnostic.config({
     prefix = "●",
     source = "if_many",
     spacing = 4,
+    -- Only show virtual text for errors in insert mode
+    severity = { min = vim.diagnostic.severity.ERROR },
+    format = function(diagnostic)
+      if diagnostic.code then
+        return string.format("%s [%s]", diagnostic.message, diagnostic.code)
+      end
+      return diagnostic.message
+    end,
   },
   float = {
     source = "always",
     border = "rounded",
     header = "",
     prefix = "",
+    format = function(diagnostic)
+      local msg = diagnostic.message
+      if diagnostic.code then
+        msg = string.format("%s [%s]", msg, diagnostic.code)
+      end
+      if diagnostic.source then
+        msg = string.format("%s (%s)", msg, diagnostic.source)
+      end
+      return msg
+    end,
   },
   signs = true,
   underline = true,
@@ -21,12 +39,32 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
--- Diagnostic signs
-local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+-- Diagnostic signs with better visibility
+local signs = {
+  Error = " ",
+  Warn = " ",
+  Hint = " ",
+  Info = " "
+}
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
+
+-- Show all diagnostics on cursor hold
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    local opts = {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+      border = "rounded",
+      source = "always",
+      prefix = " ",
+      scope = "cursor",
+    }
+    vim.diagnostic.open_float(nil, opts)
+  end,
+})
 
 -- wrap NVChad’s on_attach to remove that default <leader>ra binding
 local on_attach = function(client, bufnr)

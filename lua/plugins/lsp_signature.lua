@@ -1,6 +1,7 @@
 return {
   "ray-x/lsp_signature.nvim",
   event = "InsertEnter",
+  enabled = false, -- Disabled: Using blink-cmp's signature feature instead
   opts = {
     bind = true,
     handler_opts = {

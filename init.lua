@@ -36,6 +36,9 @@ vim.schedule(function()
   require "mappings"
   require "configs.harpoon.mappings"
   require "configs.nvim-tree"
+  require "configs.go"
+  require "configs.ruby"
+  require "configs.rust"
 end)
 
 -- Enable persistent undo with better location

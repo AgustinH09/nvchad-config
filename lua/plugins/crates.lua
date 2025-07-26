@@ -48,19 +48,19 @@ return {
       },
       on_attach = function(bufnr)
         local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set("n", "<leader>ct", require("crates").toggle, opts)
-        vim.keymap.set("n", "<leader>cr", require("crates").reload, opts)
-        vim.keymap.set("n", "<leader>cv", require("crates").show_versions_popup, opts)
-        vim.keymap.set("n", "<leader>cf", require("crates").show_features_popup, opts)
-        vim.keymap.set("n", "<leader>cd", require("crates").show_dependencies_popup, opts)
-        vim.keymap.set("n", "<leader>cu", require("crates").update_crate, opts)
-        vim.keymap.set("n", "<leader>ca", require("crates").update_all_crates, opts)
-        vim.keymap.set("n", "<leader>cU", require("crates").upgrade_crate, opts)
-        vim.keymap.set("n", "<leader>cA", require("crates").upgrade_all_crates, opts)
-        vim.keymap.set("n", "<leader>cH", require("crates").open_homepage, opts)
-        vim.keymap.set("n", "<leader>cR", require("crates").open_repository, opts)
-        vim.keymap.set("n", "<leader>cD", require("crates").open_documentation, opts)
-        vim.keymap.set("n", "<leader>cC", require("crates").open_crates_io, opts)
+        vim.keymap.set("n", "<leader>RCt", require("crates").toggle, opts)
+        vim.keymap.set("n", "<leader>RCr", require("crates").reload, opts)
+        vim.keymap.set("n", "<leader>RCv", require("crates").show_versions_popup, opts)
+        vim.keymap.set("n", "<leader>RCf", require("crates").show_features_popup, opts)
+        vim.keymap.set("n", "<leader>RCd", require("crates").show_dependencies_popup, opts)
+        vim.keymap.set("n", "<leader>RCu", require("crates").update_crate, opts)
+        vim.keymap.set("n", "<leader>RCa", require("crates").update_all_crates, opts)
+        vim.keymap.set("n", "<leader>RCU", require("crates").upgrade_crate, opts)
+        vim.keymap.set("n", "<leader>RCA", require("crates").upgrade_all_crates, opts)
+        vim.keymap.set("n", "<leader>RCh", require("crates").open_homepage, opts)
+        vim.keymap.set("n", "<leader>RCR", require("crates").open_repository, opts)
+        vim.keymap.set("n", "<leader>RCD", require("crates").open_documentation, opts)
+        vim.keymap.set("n", "<leader>RCC", require("crates").open_crates_io, opts)
       end,
     }
   end,
