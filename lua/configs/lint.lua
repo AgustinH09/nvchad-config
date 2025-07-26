@@ -13,6 +13,7 @@ lint.linters_by_ft = {
   less = { "stylelint" },
   json = { "jsonlint" },
   go = { "golangcilint" },
+  rust = { "clippy" },
   markdown = { "markdownlint-cli2" },
   terraform = { "tflint", "tfsec" },
   hcl = { "tflint", "tfsec" },

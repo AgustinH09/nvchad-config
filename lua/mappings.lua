@@ -98,6 +98,18 @@ vim.api.nvim_create_autocmd("LspAttach", {
     M("n", "gl", vim.diagnostic.open_float, opts)
     M("n", "[d", vim.diagnostic.goto_prev, opts)
     M("n", "]d", vim.diagnostic.goto_next, opts)
+
+    -- Additional LSP keybindings
+    M("n", "<leader>lh", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufn }), { bufnr = bufn })
+    end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
+
+    M("n", "<leader>ld", function()
+      vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = bufn }), { bufnr = bufn })
+    end, vim.tbl_extend("force", opts, { desc = "Toggle diagnostics" }))
+
+    M("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
+    M("n", "<leader>lr", "<cmd>LspRestart<cr>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
   end,
 })
 
@@ -116,6 +128,60 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "go",
   callback = function()
     M("n", "<leader>gd", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
+  end,
+})
+
+----- Rust (rustaceanvim) -----
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "rust",
+  callback = function()
+    -- Code actions
+    M("n", "<leader>ra", function() vim.cmd.RustLsp('codeAction') end, { desc = "Code actions" })
+    M("v", "<leader>ra", function() vim.cmd.RustLsp('codeAction') end, { desc = "Code actions" })
+
+    -- Hover actions
+    M("n", "K", function() vim.cmd.RustLsp { 'hover', 'actions' } end, { desc = "Hover actions" })
+
+    -- Runnables
+    M("n", "<leader>rr", function() vim.cmd.RustLsp('runnables') end, { desc = "Runnables" })
+    M("n", "<leader>rd", function() vim.cmd.RustLsp('debuggables') end, { desc = "Debuggables" })
+
+    -- Testing
+    M("n", "<leader>rt", function() vim.cmd.RustLsp('testables') end, { desc = "Testables" })
+
+    -- Expand macro
+    M("n", "<leader>re", function() vim.cmd.RustLsp('expandMacro') end, { desc = "Expand macro" })
+
+    -- Move item
+    M("n", "<leader>rmu", function() vim.cmd.RustLsp('moveItem', 'up') end, { desc = "Move item up" })
+    M("n", "<leader>rmd", function() vim.cmd.RustLsp('moveItem', 'down') end, { desc = "Move item down" })
+
+    -- Open Cargo.toml
+    M("n", "<leader>rc", function() vim.cmd.RustLsp('openCargo') end, { desc = "Open Cargo.toml" })
+
+    -- Parent module
+    M("n", "<leader>rp", function() vim.cmd.RustLsp('parentModule') end, { desc = "Parent module" })
+
+    -- Join lines (better for Rust)
+    M("n", "J", function() vim.cmd.RustLsp('joinLines') end, { desc = "Join lines" })
+
+    -- Structural search replace
+    M("n", "<leader>rs", function() vim.cmd.RustLsp('ssr') end, { desc = "Structural search replace" })
+
+    -- View syntax tree
+    M("n", "<leader>rst", function() vim.cmd.RustLsp { 'syntaxTree' } end, { desc = "View syntax tree" })
+
+    -- View HIR
+    M("n", "<leader>rh", function() vim.cmd.RustLsp { 'view', 'hir' } end, { desc = "View HIR" })
+
+    -- View MIR
+    M("n", "<leader>rm", function() vim.cmd.RustLsp { 'view', 'mir' } end, { desc = "View MIR" })
+
+    -- Explain error
+    M("n", "<leader>rE", function() vim.cmd.RustLsp('explainError') end, { desc = "Explain error" })
+
+    -- Render diagnostics
+    M("n", "<leader>rD", function() vim.cmd.RustLsp('renderDiagnostic') end, { desc = "Render diagnostic" })
   end,
 })
 

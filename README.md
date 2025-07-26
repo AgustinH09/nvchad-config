@@ -148,6 +148,21 @@ Initial set-up includes (but is not limited to): `lua_ls`, `gopls`, `rust_analyz
 
 You can add or blacklist servers in `lua/configs/mason-lspconfig.lua`.
 
+### Rust-specific features
+
+Enhanced Rust development with:
+- **rustaceanvim**: Supercharged Rust experience with advanced LSP features
+- **rust-analyzer**: Language Server Protocol with inlay hints and diagnostics
+- **crates.nvim**: Dependency management for `Cargo.toml`
+- **rustfmt**: Code formatting
+- **clippy**: Linting and code analysis
+- **Key features**:
+  - Code actions, hover actions, runnables, debuggables
+  - Expand macros, move items, structural search/replace
+  - View HIR/MIR, syntax tree, explain errors
+- **Rust keymaps**: `<leader>ra` (code actions), `<leader>rr` (runnables), `<leader>rt` (testables), `<leader>rd` (debuggables), `K` (hover actions)
+- **Crates keymaps**: `<leader>ct` (toggle), `<leader>cu` (update), `<leader>cU` (upgrade)
+
 ---
 
 ## Screenshots

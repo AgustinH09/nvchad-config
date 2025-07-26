@@ -2,10 +2,46 @@ local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
+-- Enhanced diagnostic configuration
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",
+    source = "if_many",
+    spacing = 4,
+  },
+  float = {
+    source = "always",
+    border = "rounded",
+    header = "",
+    prefix = "",
+  },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+})
+
+-- Diagnostic signs
+local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+end
+
 -- wrap NVChad’s on_attach to remove that default <leader>ra binding
 local on_attach = function(client, bufnr)
   nv_on_attach(client, bufnr)
   vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
+
+  -- Enable inlay hints if supported
+  if client.supports_method("textDocument/inlayHint") then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
+
+  -- Enable semantic tokens if supported
+  if client.supports_method("textDocument/semanticTokens") then
+    vim.highlight.priorities.semantic_tokens = 95
+  end
 end
 
 local marksman_caps = vim.deepcopy(capabilities)
@@ -116,6 +152,8 @@ local servers = {
   hyprls = {
     -- lspconfig defaults are sufficient here
   },
+
+  -- Rust (handled by rustaceanvim)
 
   -- Markdown
   marksman = {

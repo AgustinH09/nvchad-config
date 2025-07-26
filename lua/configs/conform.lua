@@ -9,6 +9,7 @@ local formatters_by_ft = {
   html = { "prettier" },
   ruby = { "rubocop" },
   go = { "gofumpt", "goimports-reviser", "golines", "crlfmt", "impl", "gomodifytags" },
+  rust = { "rustfmt" },
   -- javascript = { "prettierd" },
   -- typescript = { "prettierd" },
   -- node = { "prettierd" },
