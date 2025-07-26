@@ -17,6 +17,7 @@ return {
     "jbyuki/one-small-step-for-vimkind",
     "jay-babu/mason-nvim-dap.nvim",
     "./nvim-dap-vscode-js",
+    "leoluz/nvim-dap-go",
   },
 
   -- stylua: ignore
@@ -43,22 +44,8 @@ return {
   config = function()
     local dap = require "dap"
 
-    -- Register pwa-node adapter with a hardcoded port (for testing)
-    local mason_registry = require "mason-registry"
-    local js_debug_pkg = mason_registry.get_package "js-debug-adapter"
-    local js_debug_adapter_path = js_debug_pkg:get_install_path() .. "/js-debug/src/dapDebugServer.js"
-
-    dap.adapters["pwa-node"] = {
-      type = "server",
-      host = "localhost",
-      port = 9229,
-      executable = {
-        command = "node",
-        args = { js_debug_adapter_path, "9229" },
-      },
-    }
-
     require("mason-nvim-dap").setup(require "configs.mason-nvim-dap")
+    require("dap-go").setup()
 
     vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 
@@ -99,7 +86,6 @@ return {
           processId = require("dap.utils").pick_process,
           cwd = vim.fn.getcwd(),
           sourceMaps = true,
-          -- Note: We don’t pass a port here because the adapter already defines it.
         },
         -- Debug web applications (client side)
         {

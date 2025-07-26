@@ -18,6 +18,7 @@ local options = {
     "markdown_inline",
     "printf",
     "ruby",
+    "rust",
     "toml",
     "terraform",
     "typescript",
