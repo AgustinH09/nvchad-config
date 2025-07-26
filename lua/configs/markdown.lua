@@ -15,16 +15,21 @@ M.setup = function()
 
       -- Get file size in KB
       local ok, stats = pcall(vim.loop.fs_stat, filename)
-      if not ok or not stats then return end
+      if not ok or not stats then
+        return
+      end
 
       local size_kb = stats.size / 1024
 
       if size_kb > LARGE_FILE_SIZE then
-        vim.notify(string.format("Large markdown file detected (%.1f KB). Disabling some features for performance.", size_kb), vim.log.levels.INFO)
+        vim.notify(
+          string.format("Large markdown file detected (%.1f KB). Disabling some features for performance.", size_kb),
+          vim.log.levels.INFO
+        )
 
         -- Disable treesitter for this buffer
-        vim.cmd("TSBufDisable highlight")
-        vim.cmd("TSBufDisable indent")
+        vim.cmd "TSBufDisable highlight"
+        vim.cmd "TSBufDisable indent"
 
         -- Use manual folding instead of treesitter
         vim.opt_local.foldmethod = "manual"
@@ -45,12 +50,12 @@ M.setup = function()
         vim.opt_local.conceallevel = 0
 
         -- Use simpler syntax highlighting
-        vim.cmd("syntax clear")
-        vim.cmd("syntax on")
+        vim.cmd "syntax clear"
+        vim.cmd "syntax on"
 
         -- Detach LSP clients for better performance
         vim.schedule(function()
-          local clients = vim.lsp.get_clients({ bufnr = bufnr })
+          local clients = vim.lsp.get_clients { bufnr = bufnr }
           for _, client in ipairs(clients) do
             if client.name == "marksman" or client.name == "markdown_oxide" then
               vim.lsp.buf_detach_client(bufnr, client.id)
@@ -61,7 +66,7 @@ M.setup = function()
       else
         -- For normal-sized files, just disable markdown_oxide to avoid conflicts
         vim.schedule(function()
-          local clients = vim.lsp.get_clients({ bufnr = bufnr })
+          local clients = vim.lsp.get_clients { bufnr = bufnr }
           for _, client in ipairs(clients) do
             -- Keep only marksman, disable markdown_oxide to avoid conflicts
             if client.name == "markdown_oxide" then
@@ -83,7 +88,7 @@ M.setup = function()
       vim.opt_local.breakindent = true
 
       -- Spell checking (only for small files)
-      local size_kb = (vim.fn.getfsize(vim.fn.expand("%")) or 0) / 1024
+      local size_kb = (vim.fn.getfsize(vim.fn.expand "%") or 0) / 1024
       if size_kb < LARGE_FILE_SIZE then
         vim.opt_local.spell = true
         vim.opt_local.spelllang = "en_us"
@@ -104,24 +109,28 @@ M.setup = function()
       local timer = vim.loop.new_timer()
 
       -- Set a timeout to check if the file is still loading after 2 seconds
-      timer:start(2000, 0, vim.schedule_wrap(function()
-        -- Check if we're still in the same buffer and it's markdown
-        if vim.api.nvim_get_current_buf() == bufnr and vim.bo[bufnr].filetype == "markdown" then
-          local lines = vim.api.nvim_buf_line_count(bufnr)
-          if lines > 1000 then
-            vim.notify("Large markdown file detected. Switching to performance mode.", vim.log.levels.WARN)
-            vim.cmd("MarkdownPerformanceMode")
+      timer:start(
+        2000,
+        0,
+        vim.schedule_wrap(function()
+          -- Check if we're still in the same buffer and it's markdown
+          if vim.api.nvim_get_current_buf() == bufnr and vim.bo[bufnr].filetype == "markdown" then
+            local lines = vim.api.nvim_buf_line_count(bufnr)
+            if lines > 1000 then
+              vim.notify("Large markdown file detected. Switching to performance mode.", vim.log.levels.WARN)
+              vim.cmd "MarkdownPerformanceMode"
+            end
           end
-        end
-        timer:close()
-      end))
+          timer:close()
+        end)
+      )
     end,
   })
 
   -- Commands for manual control
   vim.api.nvim_create_user_command("MarkdownPerformanceMode", function()
-    vim.cmd("TSBufDisable highlight")
-    vim.cmd("TSBufDisable indent")
+    vim.cmd "TSBufDisable highlight"
+    vim.cmd "TSBufDisable indent"
     vim.opt_local.foldmethod = "manual"
     vim.opt_local.spell = false
     vim.opt_local.relativenumber = false
@@ -130,7 +139,7 @@ M.setup = function()
 
     -- Detach all LSP clients
     local bufnr = vim.api.nvim_get_current_buf()
-    local clients = vim.lsp.get_clients({ bufnr = bufnr })
+    local clients = vim.lsp.get_clients { bufnr = bufnr }
     for _, client in ipairs(clients) do
       vim.lsp.buf_detach_client(bufnr, client.id)
     end
@@ -139,8 +148,8 @@ M.setup = function()
   end, { desc = "Enable performance mode for current markdown buffer" })
 
   vim.api.nvim_create_user_command("MarkdownNormalMode", function()
-    vim.cmd("TSBufEnable highlight")
-    vim.cmd("TSBufEnable indent")
+    vim.cmd "TSBufEnable highlight"
+    vim.cmd "TSBufEnable indent"
     vim.opt_local.foldmethod = "expr"
     vim.opt_local.spell = true
     vim.opt_local.relativenumber = true
@@ -148,7 +157,7 @@ M.setup = function()
     vim.opt_local.conceallevel = 2
 
     -- Restart LSP
-    vim.cmd("LspStart")
+    vim.cmd "LspStart"
 
     vim.notify("Markdown normal mode enabled", vim.log.levels.INFO)
   end, { desc = "Disable performance mode for current markdown buffer" })
@@ -159,7 +168,7 @@ M.setup = function()
     local filename = vim.api.nvim_buf_get_name(bufnr)
     local size_kb = (vim.fn.getfsize(filename) or 0) / 1024
 
-    print("=== Markdown Diagnostics ===")
+    print "=== Markdown Diagnostics ==="
     print("File: " .. filename)
     print(string.format("Size: %.1f KB", size_kb))
     print("Large file threshold: " .. LARGE_FILE_SIZE .. " KB")
@@ -167,17 +176,17 @@ M.setup = function()
     -- Check Treesitter status
     local ts_ok, _ = pcall(require, "nvim-treesitter")
     if ts_ok then
-      print("Treesitter: Enabled")
-      local highlighter = require("vim.treesitter.highlighter")
+      print "Treesitter: Enabled"
+      local highlighter = require "vim.treesitter.highlighter"
       if highlighter.active[bufnr] then
-        print("  - Highlighting: Active")
+        print "  - Highlighting: Active"
       else
-        print("  - Highlighting: Inactive")
+        print "  - Highlighting: Inactive"
       end
     end
 
     -- Check LSP clients
-    local clients = vim.lsp.get_clients({ bufnr = bufnr })
+    local clients = vim.lsp.get_clients { bufnr = bufnr }
     print("LSP Clients (" .. #clients .. "):")
     for _, client in ipairs(clients) do
       print("  - " .. client.name)
@@ -185,9 +194,9 @@ M.setup = function()
 
     -- Check if image.nvim is disabled
     if vim.b[bufnr].disable_image_nvim then
-      print("image.nvim: Disabled for this buffer")
+      print "image.nvim: Disabled for this buffer"
     else
-      print("image.nvim: Enabled")
+      print "image.nvim: Enabled"
     end
 
     -- Check fold settings
@@ -200,7 +209,7 @@ M.setup = function()
       "image",
     }
 
-    print("Markdown plugins:")
+    print "Markdown plugins:"
     for _, plugin in ipairs(plugins) do
       local ok, _ = pcall(require, plugin)
       if ok then

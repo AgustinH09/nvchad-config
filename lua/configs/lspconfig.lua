@@ -2,54 +2,50 @@ local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
--- Enhanced diagnostic configuration
+-- Diagnostic signs - using new API instead of deprecated sign_define
+local signs = {
+  Error = " ",
+  Warn = " ",
+  Hint = " ",
+  Info = " ",
+}
+
+-- Enhanced diagnostic configuration with signs
 vim.diagnostic.config({
   virtual_text = {
     prefix = "●",
     source = "if_many",
     spacing = 4,
-    -- Only show virtual text for errors in insert mode
-    severity = { min = vim.diagnostic.severity.ERROR },
+    severity = {
+      min = vim.diagnostic.severity.HINT,
+    },
     format = function(diagnostic)
-      if diagnostic.code then
-        return string.format("%s [%s]", diagnostic.message, diagnostic.code)
+      if diagnostic.source == "harper_ls" then
+        return string.format("[grammar] %s", diagnostic.message)
       end
       return diagnostic.message
     end,
   },
   float = {
-    source = "always",
+    source = true,
     border = "rounded",
     header = "",
     prefix = "",
     format = function(diagnostic)
-      local msg = diagnostic.message
-      if diagnostic.code then
-        msg = string.format("%s [%s]", msg, diagnostic.code)
-      end
-      if diagnostic.source then
-        msg = string.format("%s (%s)", msg, diagnostic.source)
-      end
-      return msg
+      return string.format("%s: %s", diagnostic.source or "LSP", diagnostic.message)
     end,
   },
-  signs = true,
+  signs = {
+    text = signs,
+    linehl = {},
+    numhl = {},
+  },
   underline = true,
   update_in_insert = false,
   severity_sort = true,
 })
 
--- Diagnostic signs with better visibility
-local signs = {
-  Error = " ",
-  Warn = " ",
-  Hint = " ",
-  Info = " "
-}
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
+-- Signs are now configured via vim.diagnostic.config above
 
 -- Show all diagnostics on cursor hold
 vim.api.nvim_create_autocmd("CursorHold", {

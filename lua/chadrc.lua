@@ -9,6 +9,46 @@ M.base46 = {
   theme = "tokyonight",
 }
 
+-- Mason packages to install
+M.mason = {
+  pkgs = {
+    -- LSP servers
+    "lua-language-server",
+    "typescript-language-server",
+    "biome",
+    "eslint-lsp",
+    "gopls",
+    "ruby-lsp",
+    "rust-analyzer",
+    "pyright",
+    "hyprls",
+    "marksman",
+    "harper-ls",
+
+    -- Formatters
+    "prettier",
+    "stylua",
+    "gofumpt",
+    "goimports",
+    "rubocop",
+    "black",
+    "isort",
+    "shfmt",
+
+    -- Linters
+    "golangci-lint",
+    "eslint_d",
+    "shellcheck",
+    "actionlint",
+
+    -- DAP adapters
+    "debugpy",
+    "delve",
+    "codelldb",
+    "js-debug-adapter",
+  }
+}
+
 M.plugins = {
   ["nvim-telescope/telescope.nvim"] = {
     override_options = function()

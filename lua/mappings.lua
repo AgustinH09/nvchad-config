@@ -306,7 +306,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     M("n", "<leader>mp", "<cmd>MarkdownPerformanceMode<cr>", { desc = "Enable Markdown performance mode" })
     M("n", "<leader>mn", "<cmd>MarkdownNormalMode<cr>", { desc = "Enable Markdown normal mode" })
-    M("n", "<leader>mP", "<cmd>MarkdownPreview<cr>", { desc = "Preview Markdown" })
+    -- M("n", "<leader>mP", "<cmd>MarkdownPreview<cr>", { desc = "Preview Markdown" })
   end,
 })
 

@@ -82,9 +82,10 @@ return {
       LogPoint = { "", "DiagnosticInfo" },
     }
 
-    -- Set up DAP signs using your own icons
+        -- Set up DAP signs using your own icons
     for name, sign in pairs(icons) do
       local signData = type(sign) == "table" and sign or { sign }
+      -- DAP still uses the old sign_define API
       vim.fn.sign_define("Dap" .. name, {
         text = signData[1],
         texthl = signData[2] or "DiagnosticInfo",
