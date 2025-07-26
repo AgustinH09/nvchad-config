@@ -196,15 +196,18 @@ local servers = {
   -- Markdown
   marksman = {
     capabilities = marksman_caps,
+    filetypes = { "markdown" },
+    single_file_support = true,
   },
 
-  markdown_oxide = {
-    on_attach = function(client, bufnr)
-      client.server_capabilities.documentFormattingProvider = false
-      client.server_capabilities.documentRangeFormattingProvider = false
-      on_attach(client, bufnr)
-    end,
-  },
+  -- Disabled to avoid conflicts with marksman and improve performance
+  -- markdown_oxide = {
+  --   on_attach = function(client, bufnr)
+  --     client.server_capabilities.documentFormattingProvider = false
+  --     client.server_capabilities.documentRangeFormattingProvider = false
+  --     on_attach(client, bufnr)
+  --   end,
+  -- },
 }
 
 for name, opts in pairs(servers) do

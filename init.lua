@@ -39,6 +39,7 @@ vim.schedule(function()
   require "configs.go"
   require "configs.ruby"
   require "configs.rust"
+  require "configs.markdown"
 end)
 
 -- Enable persistent undo with better location

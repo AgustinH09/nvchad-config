@@ -218,15 +218,6 @@ M("n", "[g", function()
 end, { desc = "Previous git hunk" })
 
 ----- LANGUAGE SPECIFIC -----
--- Go
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "go",
-  callback = function()
-    M("n", "<leader>gd", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
-    M("n", "<leader>goA", "<cmd>GoAlternate<CR>", { desc = "Go alternate file (test <-> impl)" })
-  end,
-})
-
 -- Rust (rustaceanvim)
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "rust",
@@ -306,6 +297,25 @@ vim.api.nvim_create_autocmd("FileType", {
     M("n", "<leader>Cp", "<cmd>RustPlayground<cr>", { desc = "Open in Playground" })
     M("n", "<leader>Ca", ":CargoAddDep ", { desc = "Add dependency" })
     M("n", "<leader>Cs", ":CrateSearch ", { desc = "Search crates.io" })
+  end,
+})
+
+-- Markdown
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    M("n", "<leader>mp", "<cmd>MarkdownPerformanceMode<cr>", { desc = "Enable Markdown performance mode" })
+    M("n", "<leader>mn", "<cmd>MarkdownNormalMode<cr>", { desc = "Enable Markdown normal mode" })
+    M("n", "<leader>mP", "<cmd>MarkdownPreview<cr>", { desc = "Preview Markdown" })
+  end,
+})
+
+-- Go
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "go",
+  callback = function()
+    M("n", "<leader>gd", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
+    M("n", "<leader>goA", "<cmd>GoAlternate<CR>", { desc = "Go alternate file (test <-> impl)" })
   end,
 })
 

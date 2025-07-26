@@ -1,28 +1,39 @@
 local lspconfig = require "lspconfig"
 
 -- which of your lspconfig servers to skip installing
-local ignore_install = { "markdown-oxide" }
+local ignore_install = {}
 
--- NOTE: Corrected "ts_ls" to "tsserver" in this list
-local to_install = vim.tbl_filter(function(name)
-  return not vim.tbl_contains(ignore_install, name)
-end, {
-  "biome",
-  "cssls",
-  "eslint",
-  "gopls",
-  "harper_ls",
-  "html",
-  "hyprls",
-  "jsonls",
-  "lua_ls",
-  "markdown-oxide",
-  "marksman",
-  "ruby_lsp",
-  "ts_ls",
-})
+local on_attach = require("nvchad.configs.lspconfig").on_attach
+local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 require("mason-lspconfig").setup {
-  ensure_installed = to_install,
-  automatic_enable = false,
+  ensure_installed = {
+    "lua_ls",
+    "ts_ls",
+    "biome",
+    "eslint",
+    "gopls",
+    "ruby_lsp",
+    "rust_analyzer",
+    "pyright",
+    "hyprls",
+    "marksman",
+    -- "markdown-oxide", -- Disabled to avoid conflicts with marksman
+    "harper_ls",
+  },
+  automatic_installation = {
+    exclude = ignore_install,
+  },
+}
+
+-- Ensure all other servers are filtered
+require("mason-lspconfig").setup_handlers {
+  function(server_name)
+    if not vim.tbl_contains(ignore_install, server_name) then
+      require("lspconfig")[server_name].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+      }
+    end
+  end,
 }
