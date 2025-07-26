@@ -3,7 +3,7 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPost", "BufNewFile", "BufWritePre" },
     build = ":TSUpdate",
     config = function()
       require "configs.treesitter"
@@ -12,6 +12,7 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       require("nvim-treesitter.configs").setup {
@@ -24,6 +25,12 @@ return {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Telescope",
+    keys = {
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+      { "<leader>fw", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
+    },
     opts = function()
       return require "nvchad.configs.telescope"
     end,
@@ -31,7 +38,10 @@ return {
 
   {
     "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    cmd = { "NvimTreeToggle", "NvimTreeFocus", "NvimTreeFindFile" },
+    keys = {
+      { "<C-n>", "<cmd>NvimTreeToggle<cr>", desc = "Toggle NvimTree" },
+    },
     opts = function()
       local default_opts = require "nvchad.configs.nvimtree"
       local custom_opts = {
@@ -49,11 +59,12 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
-    dependencies = { "j-hui/fidget.nvim" },
+    event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+    dependencies = {
+      { "j-hui/fidget.nvim", opts = {} }
+    },
     config = function()
       -- require("nvchad.config.lspconfig").defaults()
-      require("fidget").setup {}
       require "configs.lspconfig"
     end,
   },
@@ -69,7 +80,7 @@ return {
 
   {
     "mfussenegger/nvim-lint",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPost", "BufWritePost", "InsertLeave" },
     config = function()
       require "configs.lint"
     end,
@@ -86,7 +97,8 @@ return {
 
   {
     "stevearc/conform.nvim",
-    event = "BufWritePre", -- uncomment for format on save
+    event = "BufWritePre",
+    cmd = { "ConformInfo" },
     opts = require "configs.conform",
     keys = require "configs.conform_keys",
   },

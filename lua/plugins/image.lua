@@ -1,6 +1,6 @@
 return {
   "3rd/image.nvim",
-  event = "VeryLazy",
+  ft = { "markdown", "vimwiki", "norg" },
   dependencies = {
     {
       "nvim-treesitter/nvim-treesitter",

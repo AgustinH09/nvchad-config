@@ -66,7 +66,6 @@ return {
         prefetch_on_insert = true,
         show_on_keyword = true,
         show_on_trigger_character = true,
-        debounce_ms = 50,
       },
       keyword = { range = "full" },
       list = {
@@ -121,31 +120,10 @@ return {
     sources = {
       default = { "lsp", "path", "snippets", "buffer", "copilot", "avante" },
       providers = {
-        lsp = {
-          name = "lsp",
-          priority = 1000,
-        },
-        path = {
-          name = "path",
-          priority = 900,
-          max_items = 10,
-        },
-        snippets = {
-          name = "snippets",
-          priority = 800,
-          max_items = 10,
-        },
-        buffer = {
-          name = "buffer",
-          priority = 500,
-          max_items = 5,
-          min_keyword_length = 4,
-        },
         copilot = {
           name = "copilot",
           module = "blink-cmp-copilot",
-          score_offset = 75,
-          priority = 600,
+          score_offset = 100,
           async = true,
           max_items = 5,
           min_keyword_length = 3,
@@ -162,8 +140,28 @@ return {
         avante = {
           module = "blink-cmp-avante",
           name = "Avante",
-          priority = 400,
+          score_offset = -100,
           opts = {},
+        },
+        buffer = {
+          name = "buffer",
+          score_offset = -10,
+          max_items = 5,
+          min_keyword_length = 4,
+        },
+        path = {
+          name = "path",
+          score_offset = 10,
+          max_items = 10,
+        },
+        snippets = {
+          name = "snippets",
+          score_offset = 0,
+          max_items = 10,
+        },
+        lsp = {
+          name = "lsp",
+          score_offset = 90,
         },
       },
     },

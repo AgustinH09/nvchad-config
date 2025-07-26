@@ -42,6 +42,8 @@ vim.filetype.add {
 -- Treesitter enhancements
 vim.treesitter.language.register("bash", "kitty")
 
--- LuaSnip load snippets
-require("luasnip.loaders.from_vscode").lazy_load()
-require("luasnip.loaders.from_vscode").lazy_load { paths = { "./snippets" } }
+-- LuaSnip load snippets (deferred for better startup)
+vim.defer_fn(function()
+  require("luasnip.loaders.from_vscode").lazy_load()
+  require("luasnip.loaders.from_vscode").lazy_load { paths = { "./snippets" } }
+end, 100)
