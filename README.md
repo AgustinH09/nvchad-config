@@ -1,6 +1,6 @@
-# chicha09's NvChad configuration
+# Personal NvChad configuration
 
-Personal, batteries-included Neovim set-up built on top of [NvChad](https://github.com/NvChad/NvChad).
+Personal Neovim set-up built on top of [NvChad](https://github.com/NvChad/NvChad).
 
 This repo can be used as
 
