@@ -1,16 +1,5 @@
 # Personal NvChad configuration
 
-Personal Neovim set-up built on top of [NvChad](https://github.com/NvChad/NvChad).
-
-This repo can be used as
-
-- a **drop-in `~/.config/nvim` folder** (clone it and run `nvim`), or
-- a reference to cherry-pick ideas, plugins or key-maps for your own config.
-
-It tries to stay reasonably close to upstream NvChad while adding quality-of-life tweaks, language tooling, a well-curated plugin collection and opinionated UX defaults.
-
----
-
 ## Quick start
 
 ```bash
