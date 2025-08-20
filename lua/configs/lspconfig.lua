@@ -2,10 +2,80 @@ local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
+-- Diagnostic signs - using new API instead of deprecated sign_define
+local signs = {
+  Error = " ",
+  Warn = " ",
+  Hint = " ",
+  Info = " ",
+}
+
+-- Enhanced diagnostic configuration with signs
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",
+    source = "if_many",
+    spacing = 4,
+    severity = {
+      min = vim.diagnostic.severity.HINT,
+    },
+    format = function(diagnostic)
+      if diagnostic.source == "harper_ls" then
+        return string.format("[grammar] %s", diagnostic.message)
+      end
+      return diagnostic.message
+    end,
+  },
+  float = {
+    source = true,
+    border = "rounded",
+    header = "",
+    prefix = "",
+    format = function(diagnostic)
+      return string.format("%s: %s", diagnostic.source or "LSP", diagnostic.message)
+    end,
+  },
+  signs = {
+    text = signs,
+    linehl = {},
+    numhl = {},
+  },
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+})
+
+-- Signs are now configured via vim.diagnostic.config above
+
+-- Show all diagnostics on cursor hold
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    local opts = {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+      border = "rounded",
+      source = "always",
+      prefix = " ",
+      scope = "cursor",
+    }
+    vim.diagnostic.open_float(nil, opts)
+  end,
+})
+
 -- wrap NVChad’s on_attach to remove that default <leader>ra binding
 local on_attach = function(client, bufnr)
   nv_on_attach(client, bufnr)
   vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
+
+  -- Enable inlay hints if supported
+  if client.supports_method("textDocument/inlayHint") then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
+
+  -- Enable semantic tokens if supported
+  if client.supports_method("textDocument/semanticTokens") then
+    vim.highlight.priorities.semantic_tokens = 95
+  end
 end
 
 local marksman_caps = vim.deepcopy(capabilities)
@@ -117,18 +187,23 @@ local servers = {
     -- lspconfig defaults are sufficient here
   },
 
+  -- Rust (handled by rustaceanvim)
+
   -- Markdown
   marksman = {
     capabilities = marksman_caps,
+    filetypes = { "markdown" },
+    single_file_support = true,
   },
 
-  markdown_oxide = {
-    on_attach = function(client, bufnr)
-      client.server_capabilities.documentFormattingProvider = false
-      client.server_capabilities.documentRangeFormattingProvider = false
-      on_attach(client, bufnr)
-    end,
-  },
+  -- Disabled to avoid conflicts with marksman and improve performance
+  -- markdown_oxide = {
+  --   on_attach = function(client, bufnr)
+  --     client.server_capabilities.documentFormattingProvider = false
+  --     client.server_capabilities.documentRangeFormattingProvider = false
+  --     on_attach(client, bufnr)
+  --   end,
+  -- },
 }
 
 for name, opts in pairs(servers) do

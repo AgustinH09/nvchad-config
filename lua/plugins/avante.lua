@@ -2,7 +2,7 @@ return {
   "yetone/avante.nvim",
   event = "VeryLazy",
   version = false,
-  enabled = true,
+  enabled = false,
   dependencies = {
     "MeanderingProgrammer/mcphub.nvim",
     "stevearc/dressing.nvim",
@@ -34,8 +34,8 @@ return {
     },
   },
   opts = {
-    provider = "openai",
-    cursor_applying_provider = "openai",
+    provider = "copilot",
+    cursor_applying_provider = "copilot",
     providers = {
       openai = {
         api_key = vim.env.OPENAI_API_KEY or "",

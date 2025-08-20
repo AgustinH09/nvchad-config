@@ -123,7 +123,7 @@ return {
         copilot = {
           name = "copilot",
           module = "blink-cmp-copilot",
-          score_offset = 75,
+          score_offset = 100,
           async = true,
           max_items = 5,
           min_keyword_length = 3,
@@ -140,14 +140,41 @@ return {
         avante = {
           module = "blink-cmp-avante",
           name = "Avante",
+          score_offset = -100,
           opts = {},
+        },
+        buffer = {
+          name = "buffer",
+          score_offset = -10,
+          max_items = 5,
+          min_keyword_length = 4,
+        },
+        path = {
+          name = "path",
+          score_offset = 10,
+          max_items = 10,
+        },
+        snippets = {
+          name = "snippets",
+          score_offset = 0,
+          max_items = 10,
+        },
+        lsp = {
+          name = "lsp",
+          score_offset = 90,
         },
       },
     },
     fuzzy = {
       implementation = "prefer_rust_with_warning",
       max_typos = function(kw)
-        return math.floor(#kw / 5)
+        if #kw <= 4 then
+          return 0
+        elseif #kw <= 8 then
+          return 1
+        else
+          return 2
+        end
       end,
       use_frecency = true,
       use_proximity = true,

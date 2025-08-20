@@ -41,5 +41,24 @@ return {
       -- telescope
       datapath = vim.fn.stdpath "data",
     }
+
+    -- Integrate with telescope
+    require("telescope").load_extension("projects")
+
+    -- Hook into directory changes to save/restore sessions
+    local group = vim.api.nvim_create_augroup("ProjectNvimSession", { clear = true })
+    vim.api.nvim_create_autocmd("DirChanged", {
+      group = group,
+      callback = function()
+        -- Small delay to ensure project.nvim has finished
+        vim.defer_fn(function()
+          local auto_session = require("auto-session")
+          if auto_session then
+            -- Try to restore session for new directory
+            auto_session.RestoreSessionFromDir(vim.fn.getcwd())
+          end
+        end, 100)
+      end,
+    })
   end,
 }
