@@ -45,6 +45,7 @@ local options = {
       prepend_args = { "--single-quote", "--trailing-comma", "es5" },
     },
     eslint_d = {
+      timeout_ms = 5000,
       condition = function(ctx)
         return vim.fs.find({ ".eslintrc", ".eslintrc.js", ".eslintrc.json" }, { path = ctx.filename, upward = true })[1]
       end,

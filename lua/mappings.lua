@@ -376,7 +376,28 @@ M("n", "<leader>]q", "<cmd>cnewer<CR>", { desc = "Newer quickfix list" })
 M("n", "<leader>[q", "<cmd>colder<CR>", { desc = "Older quickfix list" })
 
 ----- LINTING & DIAGNOSTICS -----
+M("n", "<leader>ly", function()
+  local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+  local diagnostics = vim.diagnostic.get(0, { lnum = row - 1 })
+
+  if vim.tbl_isempty(diagnostics) then
+    vim.notify("No diagnostic on current line", vim.log.levels.WARN)
+    return
+  end
+
+  local diagnostic = diagnostics[1]
+  local message = diagnostic.message
+  local line_num = diagnostic.lnum + 1
+  local line_content = vim.fn.getline(line_num)
+
+  local output = string.format("Line %d: %s\n---\n%s", line_num, vim.trim(line_content), message)
+
+  vim.fn.setreg("+", output)
+  vim.notify("Copied diagnostic with context!", vim.log.levels.INFO)
+end, { desc = "Copy diagnostic w/ context" })
+
 M("n", "<leader>Ll", "<cmd>Lint<cr>", { desc = "Run linters" })
+
 M("n", "<leader>LL", function()
   -- Show all diagnostics in quickfix
   vim.diagnostic.setqflist()
