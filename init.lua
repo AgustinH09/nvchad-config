@@ -31,6 +31,7 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "options"
 require "autocmds"
+require "cmds"
 
 vim.schedule(function()
   require "mappings"
@@ -44,7 +45,7 @@ end)
 
 -- Enable persistent undo with better location
 vim.defer_fn(function()
-  local undo_dir = vim.fn.stdpath("data") .. "/undo"
+  local undo_dir = vim.fn.stdpath "data" .. "/undo"
   if vim.fn.isdirectory(undo_dir) == 0 then
     vim.fn.mkdir(undo_dir, "p", tonumber("700", 8))
   end

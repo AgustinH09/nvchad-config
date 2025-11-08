@@ -11,7 +11,7 @@ local signs = {
 }
 
 -- Enhanced diagnostic configuration with signs
-vim.diagnostic.config({
+vim.diagnostic.config {
   virtual_text = {
     prefix = "●",
     source = "if_many",
@@ -43,7 +43,7 @@ vim.diagnostic.config({
   underline = true,
   update_in_insert = false,
   severity_sort = true,
-})
+}
 
 -- Signs are now configured via vim.diagnostic.config above
 
@@ -68,12 +68,12 @@ local on_attach = function(client, bufnr)
   vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
 
   -- Enable inlay hints if supported
-  if client.supports_method("textDocument/inlayHint") then
+  if client.supports_method "textDocument/inlayHint" then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
 
   -- Enable semantic tokens if supported
-  if client.supports_method("textDocument/semanticTokens") then
+  if client.supports_method "textDocument/semanticTokens" then
     vim.highlight.priorities.semantic_tokens = 95
   end
 end
@@ -141,8 +141,10 @@ local servers = {
       on_attach(client, bufnr)
     end,
     init_options = {
-      formatter = "standard",
-      linters = { "standard" },
+      -- formatter = "standard",
+      -- linters = { "standard" },
+      formatter = "rubocop",
+      linters = { "rubocop" },
       addonSettings = {
         ["Ruby LSP Rails"] = {
           enablePendingMigrationsPrompt = false,

@@ -176,7 +176,9 @@ return {
           return 2
         end
       end,
-      use_frecency = true,
+      frecency = {
+        enabled = true,
+      },
       use_proximity = true,
     },
     signature = { enabled = true },

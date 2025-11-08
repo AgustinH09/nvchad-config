@@ -16,7 +16,7 @@ require "nvchad.autocmds"
 -- Command to install all mason packages from chadrc
 vim.api.nvim_create_user_command("MasonInstallFromList", function()
   -- Get the package list from chadrc
-  local chadrc = require("chadrc")
+  local chadrc = require "chadrc"
   local packages = chadrc.mason and chadrc.mason.pkgs or {}
 
   if #packages == 0 then
@@ -25,7 +25,7 @@ vim.api.nvim_create_user_command("MasonInstallFromList", function()
   end
 
   -- Check if MasonInstall command exists
-  if vim.fn.exists(":MasonInstall") == 2 then
+  if vim.fn.exists ":MasonInstall" == 2 then
     local package_string = table.concat(packages, " ")
     vim.cmd("MasonInstall " .. package_string)
   else
@@ -39,8 +39,8 @@ vim.api.nvim_create_autocmd("User", {
   callback = function()
     -- Only run MasonInstallAll if it exists (NvChad command)
     vim.defer_fn(function()
-      if vim.fn.exists(":MasonInstallAll") == 2 then
-        vim.cmd("MasonInstallAll")
+      if vim.fn.exists ":MasonInstallAll" == 2 then
+        vim.cmd "MasonInstallAll"
       end
     end, 100)
   end,
