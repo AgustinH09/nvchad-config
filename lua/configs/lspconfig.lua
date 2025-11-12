@@ -2,6 +2,8 @@ local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
+require "lspconfig.configs"
+
 -- Diagnostic signs - using new API instead of deprecated sign_define
 local signs = {
   Error = " ",
@@ -83,8 +85,7 @@ marksman_caps.workspace = vim.tbl_extend("force", marksman_caps.workspace, {
   workspaceFolders = false,
 })
 
-local lspconfig = require "lspconfig"
-local util = require "lspconfig.util"
+local util = vim.lsp.config.util
 
 -- Define all servers and only specify the bits that differ from the default
 local servers = {
@@ -167,7 +168,7 @@ local servers = {
   },
 
   -- TypeScript / JavaScript (Corrected Name)
-  ts_ls = {
+  tsserver = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
@@ -215,5 +216,9 @@ for name, opts in pairs(servers) do
     capabilities = capabilities,
   }, opts)
 
-  lspconfig[name].setup(server_opts)
+  if vim.lsp.config[name] and vim.lsp.config[name].setup then
+    vim.lsp.config[name].setup(server_opts)
+  else
+    print("LSP Warning: Configuration for '" .. name .. "' skipped (not a default nvim-lspconfig server).")
+  end
 end
