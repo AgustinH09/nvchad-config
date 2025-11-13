@@ -28,6 +28,7 @@ return {
     })
   end,
   opts = {
+    legacy_commands = false,
     workspaces = {
       {
         name = "personal",

@@ -18,8 +18,8 @@ require("mason-lspconfig").setup {
     "rust_analyzer",
     "pyright",
     "hyprls",
-    "marksman",
-    -- "markdown-oxide", -- Disabled to avoid conflicts with marksman
+    -- "marksman", – Disabled to avoid conflicts with marksman
+    "markdown_oxide",
     "harper_ls",
   },
   automatic_installation = {

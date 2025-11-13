@@ -159,13 +159,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 ----- OBSIDIAN -----
 M("n", "<leader>oc", "<cmd>lua require('obsidian').util.toggle_checkbox()<CR>", { desc = "Toggle checkbox" })
-M("n", "<leader>ot", "<cmd>ObsidianTemplate<CR>", { desc = "Insert template" })
-M("n", "<leader>oo", "<cmd>ObsidianOpen<CR>", { desc = "Open in app" })
-M("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Show backlinks" })
-M("n", "<leader>ol", "<cmd>ObsidianLinks<CR>", { desc = "Show links" })
-M("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "New note" })
-M("n", "<leader>os", "<cmd>ObsidianSearch<CR>", { desc = "Search notes" })
-M("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick switch" })
+M("n", "<leader>ot", "<cmd>Obsidian template<CR>", { desc = "Insert template" })
+M("n", "<leader>oo", "<cmd>Obsidian open<CR>", { desc = "Open in app" })
+M("n", "<leader>ob", "<cmd>Obsidian backlinks<CR>", { desc = "Show backlinks" })
+M("n", "<leader>ol", "<cmd>Obsidian links<CR>", { desc = "Show links" })
+M("n", "<leader>on", "<cmd>Obsidian new<CR>", { desc = "New note" })
+M("n", "<leader>os", "<cmd>Obsidian search<CR>", { desc = "Search notes" })
+M("n", "<leader>oq", "<cmd>Obsidian quick_switch<CR>", { desc = "Quick switch" })
 
 ----- GIT -----
 M("n", "<leader>gb", function()

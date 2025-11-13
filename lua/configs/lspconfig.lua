@@ -2,9 +2,10 @@ local nv_on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
-require "lspconfig.configs"
+local lspconfig = require "lspconfig"
+local util = require "lspconfig.util"
 
--- Diagnostic signs - using new API instead of deprecated sign_define
+-- Diagnostic signs
 local signs = {
   Error = " ",
   Warn = " ",
@@ -67,33 +68,29 @@ vim.api.nvim_create_autocmd("CursorHold", {
 -- wrap NVChad’s on_attach to remove that default <leader>ra binding
 local on_attach = function(client, bufnr)
   nv_on_attach(client, bufnr)
-  vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
+  pcall(vim.keymap.del, "n", "<leader>ra", { buffer = bufnr }) -- Safe delete
 
-  -- Enable inlay hints if supported
-  if client.supports_method "textDocument/inlayHint" then
-    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  if client:supports_method "textDocument/inlayHint" then
+    vim.lsp.inlay_hint.enable(true, { buffer = bufnr })
   end
 
-  -- Enable semantic tokens if supported
-  if client.supports_method "textDocument/semanticTokens" then
-    vim.highlight.priorities.semantic_tokens = 95
+  if client:supports_method "textDocument/semanticTokens" then
+    vim.hl.priorities.semantic_tokens = 95
   end
 end
 
-local marksman_caps = vim.deepcopy(capabilities)
-marksman_caps.workspace = vim.tbl_extend("force", marksman_caps.workspace, {
-  workspaceFolders = false,
-})
+-- local marksman_caps = vim.deepcopy(capabilities)
+-- marksman_caps.workspace = vim.tbl_extend("force", marksman_caps.workspace, {
+--   workspaceFolders = false,
+-- })
 
-local util = vim.lsp.config.util
-
--- Define all servers and only specify the bits that differ from the default
 local servers = {
   -- simple defaults
   cssls = {},
   eslint = {},
   harper_ls = {},
   html = {},
+  hypr_ls = {},
   jsonls = {},
 
   -- Lua
@@ -128,12 +125,12 @@ local servers = {
           unusedparams = true,
         },
         staticcheck = true,
-        gofumpt = true, -- A common and recommended setting
+        gofumpt = true,
       },
     },
   },
 
-  -- Ruby LSP (with Rails & RSpec add-ons)
+  -- Ruby LSP
   ruby_lsp = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
@@ -167,8 +164,8 @@ local servers = {
     },
   },
 
-  -- TypeScript / JavaScript (Corrected Name)
-  tsserver = {
+  -- TypeScript / JavaScript
+  ts_ls = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
@@ -176,7 +173,7 @@ local servers = {
     end,
   },
 
-  -- Biome (alternative JS/TS linter & formatter)
+  -- Biome
   biome = {
     on_attach = function(client, bufnr)
       client.server_capabilities.documentFormattingProvider = false
@@ -185,28 +182,26 @@ local servers = {
     end,
   },
 
-  -- Hypr configuration language
-  hyprls = {
-    -- lspconfig defaults are sufficient here
-  },
-
-  -- Rust (handled by rustaceanvim)
-
   -- Markdown
-  marksman = {
-    capabilities = marksman_caps,
-    filetypes = { "markdown" },
-    single_file_support = true,
-  },
-
-  -- Disabled to avoid conflicts with marksman and improve performance
-  -- markdown_oxide = {
-  --   on_attach = function(client, bufnr)
-  --     client.server_capabilities.documentFormattingProvider = false
-  --     client.server_capabilities.documentRangeFormattingProvider = false
-  --     on_attach(client, bufnr)
-  --   end,
+  -- marksman = {
+  --   capabilities = marksman_caps,
+  --   filetypes = { "markdown" },
+  --   single_file_support = true,
   -- },
+  --
+
+  -- markdown_oxide - For Obsidian
+  markdown_oxide = {
+    capabilities = vim.tbl_deep_extend("force", capabilities, {
+      workspace = {
+        didChangeWatchedFiles = {
+          dynamicRegistration = true,
+        },
+      },
+    }),
+    filetypes = { "markdown" },
+    root_dir = util.root_pattern(".obsidian", ".git", "README.md"),
+  },
 }
 
 for name, opts in pairs(servers) do
@@ -216,9 +211,10 @@ for name, opts in pairs(servers) do
     capabilities = capabilities,
   }, opts)
 
-  if vim.lsp.config[name] and vim.lsp.config[name].setup then
-    vim.lsp.config[name].setup(server_opts)
+  if vim.fn.has "nvim-0.11" == 1 then
+    vim.lsp.config(name, server_opts)
+    vim.lsp.enable(name)
   else
-    print("LSP Warning: Configuration for '" .. name .. "' skipped (not a default nvim-lspconfig server).")
+    lspconfig[name].setup(server_opts)
   end
 end

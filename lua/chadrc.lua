@@ -45,8 +45,10 @@ M.mason = {
     "debugpy",
     "delve",
     "codelldb",
+    "cpptools",
     "js-debug-adapter",
-  }
+    "python",
+  },
 }
 
 M.plugins = {
