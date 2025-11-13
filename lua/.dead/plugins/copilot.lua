@@ -1,5 +1,6 @@
 return {
   "github/copilot.vim",
+  enabled = false,
   dependencies = { "catppuccin/nvim" },
   event = "VimEnter",
   init = function()
@@ -8,4 +9,3 @@ return {
   end,
   keys = {},
 }
-

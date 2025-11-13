@@ -11,12 +11,12 @@ return {
     "CoverageClear",
   },
   keys = {
-    { "<leader>tc", "<cmd>Coverage<cr>", desc = "Load and display coverage" },
-    { "<leader>tC", "<cmd>CoverageToggle<cr>", desc = "Toggle coverage display" },
-    { "<leader>tcs", "<cmd>CoverageSummary<cr>", desc = "Coverage summary" },
+    { "<leader>Tc", "<cmd>Coverage<cr>", desc = "Load and display coverage" },
+    { "<leader>TC", "<cmd>CoverageToggle<cr>", desc = "Toggle coverage display" },
+    { "<leader>Tcs", "<cmd>CoverageSummary<cr>", desc = "Coverage summary" },
   },
   config = function()
-    require("coverage").setup({
+    require("coverage").setup {
       commands = true,
       highlights = {
         -- customize highlight groups
@@ -59,6 +59,6 @@ return {
           coverage_command = "bundle exec rspec",
         },
       },
-    })
+    }
   end,
 }

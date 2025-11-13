@@ -24,7 +24,7 @@ M("n", "<leader>Q", "<cmd>q!<CR>", { desc = "Force quit" })
 -- paste in visual without overwriting register
 M("x", "<leader>p", [["_dP]], { desc = "Paste without yanking" })
 -- delete without yanking
-M({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without yanking" })
+M({ "n", "v" }, "<leader>D", [["_d]], { desc = "Delete without yanking" })
 
 M("n", "<leader>gv", "`[v`]", { desc = "Visually select last paste/change" })
 
