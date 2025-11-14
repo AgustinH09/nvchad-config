@@ -13,7 +13,7 @@ return {
   keys = {
     { "<leader>Tc", "<cmd>Coverage<cr>", desc = "Load and display coverage" },
     { "<leader>TC", "<cmd>CoverageToggle<cr>", desc = "Toggle coverage display" },
-    { "<leader>Tcs", "<cmd>CoverageSummary<cr>", desc = "Coverage summary" },
+    { "<leader>TS", "<cmd>CoverageSummary<cr>", desc = "Coverage summary" },
   },
   config = function()
     require("coverage").setup {
