@@ -49,6 +49,6 @@ vim.defer_fn(function()
 end, 100)
 
 -- Session management settings
-vim.opt.sessionoptions:append("localoptions")
-vim.opt.sessionoptions:remove("options")
-vim.opt.sessionoptions:remove("globals")
+vim.opt.sessionoptions:append "localoptions"
+vim.opt.sessionoptions:remove "options"
+vim.opt.sessionoptions:remove "globals"

@@ -25,12 +25,17 @@ M.mason = {
     "markdown_oxide",
     -- "marksman", -- Disabled: using markdown_oxide for Obsidian instead
     "harper-ls",
+    "terraform-ls",
+    "yaml-language-server",
+    "bash-language-server",
 
     -- Formatters
     "prettier",
     "stylua",
     "gofumpt",
     "goimports",
+    "goimports-reviser",
+    "golines",
     "rubocop",
     "black",
     "isort",
@@ -41,14 +46,16 @@ M.mason = {
     "eslint_d",
     "shellcheck",
     "actionlint",
+    "htmlhint",
+    "stylelint",
+    "jsonlint",
+    "markdownlint-cli2",
 
     -- DAP adapters
-    "debugpy",
     "delve",
     "codelldb",
-    "cpptools",
     "js-debug-adapter",
-    "python",
+    "ruby-debug-adapter",
   },
 }
 

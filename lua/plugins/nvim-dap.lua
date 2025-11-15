@@ -18,7 +18,7 @@ return {
     "jay-babu/mason-nvim-dap.nvim",
     "./nvim-dap-vscode-js",
     "leoluz/nvim-dap-go",
-    "mfussenegger/nvim-dap-python",
+    "nvim-telescope/telescope-dap.nvim",
   },
 
   -- stylua: ignore
@@ -51,38 +51,47 @@ return {
       require("dap").clear_breakpoints()
       vim.notify("Breakpoints cleared", vim.log.levels.INFO)
     end, desc = "Clear all breakpoints" },
+    { "<leader>dL", function()
+      require("dap").set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+    end, desc = "Log Point" },
 
     -- UI
     { "<leader>du", function() require("dapui").toggle() end, desc = "Toggle DAP UI" },
     { "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = {"n", "v"} },
+
+    -- Telescope DAP
+    { "<leader>dT", "<cmd>Telescope dap commands<cr>", desc = "DAP Commands" },
+    { "<leader>dt", "<cmd>Telescope dap configurations<cr>", desc = "DAP Configs" },
+    { "<leader>dbb", "<cmd>Telescope dap list_breakpoints<cr>", desc = "List Breakpoints" },
   },
 
   config = function()
     local dap = require "dap"
 
+    -- Enable DAP logging
+    dap.set_log_level "INFO"
+
+    -- User command to open DAP log
+    vim.api.nvim_create_user_command("DapLog", function()
+      vim.cmd("edit " .. vim.fn.stdpath "cache" .. "/dap.log")
+    end, { desc = "Open DAP log file" })
+
     require("mason-nvim-dap").setup(require "configs.mason-nvim-dap")
     require("dap-go").setup()
 
-    -- Python debugging setup
-    local dap_python = require("dap-python")
-    -- Use the python from mason if available, otherwise system python
-    local python_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
-    if vim.fn.executable(python_path) == 1 then
-      dap_python.setup(python_path)
-    else
-      dap_python.setup("python3")
-    end
+    -- Load Telescope DAP extension
+    require("telescope").load_extension "dap"
 
     vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 
     local icons = {
-      Breakpoint = { "", "DiagnosticError" },
-      BreakpointCondition = { "", "DiagnosticWarn" },
-      BreakpointRejected = { "", "DiagnosticHint" },
-      LogPoint = { "", "DiagnosticInfo" },
+      Breakpoint = { "", "DiagnosticError" },
+      BreakpointCondition = { "", "DiagnosticWarn" },
+      BreakpointRejected = { "", "DiagnosticHint" },
+      LogPoint = { "", "DiagnosticInfo" },
     }
 
-        -- Set up DAP signs using your own icons
+    -- Set up DAP signs using your own icons
     for name, sign in pairs(icons) do
       local signData = type(sign) == "table" and sign or { sign }
       -- DAP still uses the old sign_define API
@@ -147,6 +156,28 @@ return {
         },
       }
     end
+
+    -- Ruby debugging setup
+    dap.adapters.ruby = {
+      type = "executable",
+      command = "bundle",
+      args = { "exec", "rdbg", "-n", "--open", "--port", "38698", "-c", "--", "bundle", "exec" },
+    }
+
+    dap.configurations.ruby = {
+      {
+        type = "ruby",
+        request = "launch",
+        name = "Debug Ruby file",
+        program = "${file}",
+      },
+      {
+        type = "ruby",
+        request = "attach",
+        name = "Attach to rdbg",
+        port = 38698,
+      },
+    }
 
     -- Setup for parsing VS Code launch.json files
     local vscode = require "dap.ext.vscode"

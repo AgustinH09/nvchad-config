@@ -3,7 +3,7 @@ return {
   event = "BufRead",
   version = "*",
   config = function()
-    require("gitsigns").setup({
+    require("gitsigns").setup {
       signs = {
         add = { text = "│" },
         change = { text = "│" },
@@ -39,6 +39,6 @@ return {
         row = 0,
         col = 1,
       },
-    })
+    }
   end,
 }

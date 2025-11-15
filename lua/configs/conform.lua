@@ -19,6 +19,9 @@ local formatters_by_ft = {
   yaml = { "prettier" },
   markdown = { "prettier", "markdownlint-cli2" },
   terraform = { "terraform_fmt" },
+  sh = { "shfmt" },
+  bash = { "shfmt" },
+  zsh = { "shfmt" },
 }
 
 -- Add global formatters to each filetype list

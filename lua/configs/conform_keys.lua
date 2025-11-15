@@ -38,10 +38,14 @@ local keys = {
   {
     "<leader>Fs",
     function()
-      require("conform").format({ async = true, lsp_fallback = true, range = {
-        start = vim.api.nvim_buf_get_mark(0, "<"),
-        ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
-      }})
+      require("conform").format {
+        async = true,
+        lsp_fallback = true,
+        range = {
+          start = vim.api.nvim_buf_get_mark(0, "<"),
+          ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+        },
+      }
     end,
     mode = { "v", "x" },
     desc = "Format selection",
@@ -51,10 +55,10 @@ local keys = {
   {
     "<leader>Fc",
     function()
-      require("conform").format({
-        formatters = vim.fn.input("Formatter: "):split(" "),
+      require("conform").format {
+        formatters = vim.fn.input("Formatter: "):split " ",
         async = true,
-      })
+      }
     end,
     desc = "Choose formatter",
   },

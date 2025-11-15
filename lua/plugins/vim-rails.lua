@@ -10,23 +10,23 @@ return {
     vim.g.rails_projections = {
       ["app/models/*.rb"] = {
         alternate = "spec/models/{}_spec.rb",
-        type = "model"
+        type = "model",
       },
       ["app/controllers/*.rb"] = {
         alternate = "spec/controllers/{}_spec.rb",
-        type = "controller"
+        type = "controller",
       },
       ["app/views/*"] = {
         alternate = "spec/views/{}_spec.rb",
-        type = "view"
+        type = "view",
       },
       ["lib/*.rb"] = {
         alternate = "spec/lib/{}_spec.rb",
-        type = "lib"
+        type = "lib",
       },
       ["spec/*_spec.rb"] = {
         alternate = "app/{}.rb",
-        type = "spec"
+        type = "spec",
       },
     }
   end,

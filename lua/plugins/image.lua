@@ -7,7 +7,7 @@ return {
     },
   },
   config = function()
-    local image = require("image")
+    local image = require "image"
 
     -- Override the setup to check for our disable flag
     local original_setup = image.setup
@@ -25,7 +25,7 @@ return {
       end
 
       -- Call original setup with modified options
-      original_setup({
+      original_setup {
         backend = "kitty",
         integrations = {
           markdown = {
@@ -55,10 +55,10 @@ return {
 
         -- Hijack buffer options
         hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp" },
-      })
+      }
     end
 
     -- Initialize with our wrapped setup
-    image.setup({})
+    image.setup {}
   end,
 }

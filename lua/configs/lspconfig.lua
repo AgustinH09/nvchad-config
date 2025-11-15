@@ -92,6 +92,9 @@ local servers = {
   html = {},
   hypr_ls = {},
   jsonls = {},
+  terraformls = {},
+  yamlls = {},
+  bashls = {},
 
   -- Lua
   lua_ls = {

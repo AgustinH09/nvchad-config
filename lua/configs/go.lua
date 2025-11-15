@@ -39,10 +39,10 @@ M.setup = function()
 
   -- Custom commands
   vim.api.nvim_create_user_command("GoAlternate", function()
-    local file = vim.fn.expand("%:p")
+    local file = vim.fn.expand "%:p"
     local alt_file
 
-    if file:match("_test%.go$") then
+    if file:match "_test%.go$" then
       -- Test file -> implementation file
       alt_file = file:gsub("_test%.go$", ".go")
     else

@@ -2,10 +2,10 @@ return {
   "rcarriga/nvim-dap-ui",
   dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
   config = function()
-    local dap = require("dap")
-    local dapui = require("dapui")
+    local dap = require "dap"
+    local dapui = require "dapui"
 
-    dapui.setup({
+    dapui.setup {
       icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
       mappings = {
         expand = { "<CR>", "<2-LeftMouse>" },
@@ -51,7 +51,7 @@ return {
         max_type_length = nil,
         max_value_lines = 100,
       },
-    })
+    }
 
     -- Auto-open/close DAP UI
     dap.listeners.after.event_initialized["dapui_config"] = function()

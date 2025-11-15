@@ -42,7 +42,7 @@ M.setup = function()
     local cmd = "cargo " .. opts.args
 
     -- Run in terminal for interactive commands
-    if opts.args:match("^run") or opts.args:match("^test") then
+    if opts.args:match "^run" or opts.args:match "^test" then
       vim.cmd("split | terminal " .. cmd)
     else
       vim.fn.jobstart(cmd, {
@@ -99,14 +99,14 @@ M.setup = function()
     local encoded = vim.fn.system("echo " .. vim.fn.shellescape(content) .. " | base64 -w0")
     local url = "https://play.rust-lang.org/?code=" .. encoded
     vim.fn.system("xdg-open " .. url)
-    vim.notify("Opened in Rust Playground")
+    vim.notify "Opened in Rust Playground"
   end, {
     desc = "Open current buffer in Rust Playground",
   })
 
   -- Rust documentation shortcuts
   vim.api.nvim_create_user_command("RustDoc", function(opts)
-    local item = opts.args ~= "" and opts.args or vim.fn.expand("<cword>")
+    local item = opts.args ~= "" and opts.args or vim.fn.expand "<cword>"
     local url = "https://doc.rust-lang.org/std/?search=" .. item
     vim.fn.system("xdg-open " .. url)
   end, {
@@ -132,7 +132,7 @@ M.setup = function()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "rust",
     callback = function()
-      vim.opt_local.errorformat:prepend({
+      vim.opt_local.errorformat:prepend {
         "%Eerror: %m",
         "%Eerror[E%n]: %m",
         "%Wwarning: %m",
@@ -140,7 +140,7 @@ M.setup = function()
         "%-G%f:%l",
         "%-G   |>%m",
         "%-G   |",
-      })
+      }
     end,
   })
 end

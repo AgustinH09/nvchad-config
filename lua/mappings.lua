@@ -47,8 +47,8 @@ del("n", "<leader>fm")
 ----- BUFFER MANAGEMENT -----
 M("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close buffer" })
 M("n", "<leader>X", "<cmd>bd!<cr>", { desc = "Force close buffer" })
--- M("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
--- M("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+M("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
+M("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 
 ----- MINIMOVE -----
 M("n", "<M-h>", function()
@@ -82,6 +82,16 @@ M("n", "<leader>tv", "<cmd>vsplit | terminal<CR>", { desc = "Vertical Terminal" 
 
 ----- UNDOTREE -----
 M("n", "<leader>u", "<cmd>UndotreeToggle<CR>", { desc = "Toggle UndoTree" })
+
+----- WINDOW MANAGEMENT -----
+M("n", "<leader>wv", "<cmd>vsplit<cr>", { desc = "Vertical split" })
+M("n", "<leader>ws", "<cmd>split<cr>", { desc = "Horizontal split" })
+M("n", "<leader>wc", "<C-w>c", { desc = "Close window" })
+M("n", "<leader>wo", "<C-w>o", { desc = "Close other windows" })
+M("n", "<leader>w=", "<C-w>=", { desc = "Equalize window sizes" })
+M("n", "<leader>w|", "<C-w>|", { desc = "Maximize width" })
+M("n", "<leader>w_", "<C-w>_", { desc = "Maximize height" })
+M("n", "<leader>wr", "<C-w>r", { desc = "Rotate windows" })
 
 ----- LSP (Language Server Protocol) -----
 local lsp_grp = vim.api.nvim_create_augroup("UserLspKeymaps", { clear = true })
@@ -311,7 +321,7 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "go",
   callback = function()
-    M("n", "<leader>gd", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
+    M("n", "<leader>goh", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
     M("n", "<leader>goA", "<cmd>GoAlternate<CR>", { desc = "Go alternate file (test <-> impl)" })
   end,
 })

@@ -18,6 +18,9 @@ lint.linters_by_ft = {
   markdown = { "markdownlint-cli2" },
   terraform = { "tflint", "tfsec" },
   hcl = { "tflint", "tfsec" },
+  sh = { "shellcheck" },
+  bash = { "shellcheck" },
+  zsh = { "shellcheck" },
 }
 
 local luacheck_args = lint.linters.luacheck.args or {}
@@ -28,10 +31,13 @@ lint.linters.luacheck.args = luacheck_args
 lint.linters.eslint_d = {
   cmd = "eslint_d",
   args = {
-    "--format", "json",
+    "--format",
+    "json",
     "--stdin",
     "--stdin-filename",
-    function() return vim.api.nvim_buf_get_name(0) end,
+    function()
+      return vim.api.nvim_buf_get_name(0)
+    end,
   },
   stream = "stdout",
   ignore_exitcode = true,

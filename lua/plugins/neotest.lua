@@ -17,90 +17,192 @@ return {
   cmd = { "Neotest" },
   keys = {
     -- Run tests
-    { "<leader>tt", function() require("neotest").run.run() end, desc = "Run nearest test" },
-    { "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run file tests" },
-    { "<leader>tl", function() require("neotest").run.run_last() end, desc = "Run last test" },
-    { "<leader>ta", function() require("neotest").run.run(vim.fn.expand("%:p:h")) end, desc = "Run all tests in dir" },
+    {
+      "<leader>tt",
+      function()
+        require("neotest").run.run()
+      end,
+      desc = "Run nearest test",
+    },
+    {
+      "<leader>tf",
+      function()
+        require("neotest").run.run(vim.fn.expand "%")
+      end,
+      desc = "Run file tests",
+    },
+    {
+      "<leader>tl",
+      function()
+        require("neotest").run.run_last()
+      end,
+      desc = "Run last test",
+    },
+    {
+      "<leader>ta",
+      function()
+        require("neotest").run.run(vim.fn.expand "%:p:h")
+      end,
+      desc = "Run all tests in dir",
+    },
 
     -- Debug tests
-    { "<leader>td", function() require("neotest").run.run({strategy = "dap"}) end, desc = "Debug nearest test" },
-    { "<leader>tD", function() require("neotest").run.run({vim.fn.expand("%"), strategy = "dap"}) end, desc = "Debug file tests" },
+    {
+      "<leader>td",
+      function()
+        require("neotest").run.run { strategy = "dap" }
+      end,
+      desc = "Debug nearest test",
+    },
+    {
+      "<leader>tD",
+      function()
+        require("neotest").run.run { vim.fn.expand "%", strategy = "dap" }
+      end,
+      desc = "Debug file tests",
+    },
 
     -- Control tests
-    { "<leader>ts", function() require("neotest").run.stop() end, desc = "Stop test" },
-    { "<leader>tA", function() require("neotest").run.attach() end, desc = "Attach to test" },
+    {
+      "<leader>ts",
+      function()
+        require("neotest").run.stop()
+      end,
+      desc = "Stop test",
+    },
+    {
+      "<leader>tA",
+      function()
+        require("neotest").run.attach()
+      end,
+      desc = "Attach to test",
+    },
 
     -- Test output
-    { "<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show test output" },
-    { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle output panel" },
+    {
+      "<leader>to",
+      function()
+        require("neotest").output.open { enter = true, auto_close = true }
+      end,
+      desc = "Show test output",
+    },
+    {
+      "<leader>tO",
+      function()
+        require("neotest").output_panel.toggle()
+      end,
+      desc = "Toggle output panel",
+    },
 
     -- Test summary
-    { "<leader>tS", function() require("neotest").summary.toggle() end, desc = "Toggle test summary" },
+    {
+      "<leader>tS",
+      function()
+        require("neotest").summary.toggle()
+      end,
+      desc = "Toggle test summary",
+    },
 
     -- Navigation
-    { "[t", function() require("neotest").jump.prev({ status = "failed" }) end, desc = "Previous failed test" },
-    { "]t", function() require("neotest").jump.next({ status = "failed" }) end, desc = "Next failed test" },
+    {
+      "[t",
+      function()
+        require("neotest").jump.prev { status = "failed" }
+      end,
+      desc = "Previous failed test",
+    },
+    {
+      "]t",
+      function()
+        require("neotest").jump.next { status = "failed" }
+      end,
+      desc = "Next failed test",
+    },
 
     -- Marks
-    { "<leader>tm", function() require("neotest").summary.mark() end, desc = "Mark test" },
-    { "<leader>tM", function() require("neotest").summary.clear_marked() end, desc = "Clear marked tests" },
-    { "<leader>tr", function() require("neotest").summary.run_marked() end, desc = "Run marked tests" },
+    {
+      "<leader>tm",
+      function()
+        require("neotest").summary.mark()
+      end,
+      desc = "Mark test",
+    },
+    {
+      "<leader>tM",
+      function()
+        require("neotest").summary.clear_marked()
+      end,
+      desc = "Clear marked tests",
+    },
+    {
+      "<leader>tr",
+      function()
+        require("neotest").summary.run_marked()
+      end,
+      desc = "Run marked tests",
+    },
 
     -- Watch mode
-    { "<leader>tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end, desc = "Toggle watch mode" },
+    {
+      "<leader>tw",
+      function()
+        require("neotest").watch.toggle(vim.fn.expand "%")
+      end,
+      desc = "Toggle watch mode",
+    },
   },
   config = function()
     require("neotest").setup {
       adapters = {
         -- Go
-        require("neotest-golang")({
+        require "neotest-golang" {
           experimental = {
             test_table = true,
           },
-          args = { "-count=1", "-timeout=60s" }
-        }),
+          args = { "-count=1", "-timeout=60s" },
+        },
 
         -- Ruby/Rails
-        require("neotest-rspec")({
+        require "neotest-rspec" {
           rspec_cmd = function()
-            return vim.tbl_flatten({
+            return vim.tbl_flatten {
               "bundle",
               "exec",
               "rspec",
-            })
+            }
           end,
-        }),
+        },
 
         -- Python
-        require("neotest-python")({
+        require "neotest-python" {
           dap = { justMyCode = false },
           runner = "pytest",
           python = ".venv/bin/python",
-        }),
+        },
 
         -- JavaScript/TypeScript
-        require("neotest-jest")({
+        require "neotest-jest" {
           jestCommand = "npm test --",
           jestConfigFile = "custom.jest.config.ts",
           env = { CI = true },
           cwd = function()
             return vim.fn.getcwd()
           end,
-        }),
+        },
 
         -- Vitest for modern JS/TS projects
-        require("neotest-vitest"),
+        require "neotest-vitest",
 
         -- Rust
-        require("neotest-rust")({
+        require "neotest-rust" {
           args = { "--no-capture" },
           dap_adapter = "codelldb",
-        }),
+        },
 
         -- Fallback for other test runners
-        require("neotest-vim-test")({
+        require "neotest-vim-test" {
           ignore_file_types = { "python", "vim", "lua", "javascript", "typescript", "go", "rust", "ruby" },
-        }),
+        },
       },
 
       -- UI configuration
@@ -197,7 +299,7 @@ return {
       watch = {
         enabled = true,
         symbol_queries = {
-          go = '        ;query\n        ;Captures imported types\n        (qualified_type name: (type_identifier) @symbol)\n        ;Captures package-local and built-in types\n        (type_identifier)@symbol\n        ;Captures imported function calls and variables/constants\n        (selector_expression field: (field_identifier) @symbol)\n        ;Captures package-local functions calls\n        (call_expression function: (identifier) @symbol)\n      ',
+          go = "        ;query\n        ;Captures imported types\n        (qualified_type name: (type_identifier) @symbol)\n        ;Captures package-local and built-in types\n        (type_identifier)@symbol\n        ;Captures imported function calls and variables/constants\n        (selector_expression field: (field_identifier) @symbol)\n        ;Captures package-local functions calls\n        (call_expression function: (identifier) @symbol)\n      ",
           lua = '        ;query\n        ;Captures module names in require calls\n        (function_call\n          name: ((identifier) @function (#eq? @function "require"))\n          arguments: (arguments (string) @symbol))\n      ',
           python = "        ;query\n        ;Captures imports and modules they're imported from\n        (import_from_statement (_ (identifier) @symbol))\n        (import_statement (_ (identifier) @symbol))\n      ",
         },
