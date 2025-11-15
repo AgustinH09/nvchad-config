@@ -52,6 +52,10 @@ return {
           enable = true,
           update_root = true,
         },
+        view = {
+          relativenumber = true,
+          number = true,
+        },
       }
       return vim.tbl_deep_extend("force", default_opts, custom_opts)
     end,

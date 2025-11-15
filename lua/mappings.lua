@@ -9,9 +9,6 @@ local function M(mode, lhs, rhs, opts)
   map(mode, lhs, rhs, opts)
 end
 
--- pull in modules once
-local mini_move = require "mini.move"
-
 ----- BASIC NAVIGATION & EDITING -----
 M("n", ";", ":", { desc = "Enter command mode" })
 M("n", "<C-d>", "<C-d>zz", { desc = "Scroll down & center" })
@@ -55,28 +52,28 @@ M("n", "<leader>X", "<cmd>bd!<cr>", { desc = "Force close buffer" })
 
 ----- MINIMOVE -----
 M("n", "<M-h>", function()
-  mini_move.move_line "left"
+  require("mini.move").move_line "left"
 end, { desc = "Move line left" })
 M("v", "<M-h>", function()
-  mini_move.move_selection "left"
+  require("mini.move").move_selection "left"
 end, { desc = "Move selection left" })
 M("n", "<M-l>", function()
-  mini_move.move_line "right"
+  require("mini.move").move_line "right"
 end, { desc = "Move line right" })
 M("v", "<M-l>", function()
-  mini_move.move_selection "right"
+  require("mini.move").move_selection "right"
 end, { desc = "Move selection right" })
 M("n", "<M-k>", function()
-  mini_move.move_line "up"
+  require("mini.move").move_line "up"
 end, { desc = "Move line up" })
 M("v", "<M-k>", function()
-  mini_move.move_selection "up"
+  require("mini.move").move_selection "up"
 end, { desc = "Move selection up" })
 M("n", "<M-j>", function()
-  mini_move.move_line "down"
+  require("mini.move").move_line "down"
 end, { desc = "Move line down" })
 M("v", "<M-j>", function()
-  mini_move.move_selection "down"
+  require("mini.move").move_selection "down"
 end, { desc = "Move selection down" })
 
 ----- TERMINALS -----

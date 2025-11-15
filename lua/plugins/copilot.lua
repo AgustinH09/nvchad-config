@@ -6,7 +6,7 @@ return {
     require("copilot").setup {
       suggestion = { enabled = false },
       panel = { enabled = false },
-      copilot_node_command = "$HOME/.local/share/mise/installs/node/24.3.0/bin/node",
+      copilot_node_command = vim.fn.exepath "node",
       filetypes = {
         yaml = true,
         markdown = true,

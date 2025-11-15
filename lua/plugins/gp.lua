@@ -27,8 +27,8 @@ return {
           chat = true,
           command = true,
           provider = "openai",
-          model = { model = "gpt-4.1-2025-04-14" },
-          -- model = { model = "o3-2025-04-16" },
+          model = { model = "gpt-4o" },
+          -- model = { model = "gpt-4-turbo" },
           system_prompt = "I am an AI meticulously crafted to provide programming guidance and code assistance. "
             .. "To best serve you as a computer programmer, please provide detailed inquiries and code snippets when necessary, "
             .. "and expect precise, technical responses tailored to your development needs.\n",
@@ -37,8 +37,8 @@ return {
           name = "GptChat",
           chat = true,
           command = false,
-          model = { model = "gpt-4.1-2025-04-14", temperature = 1.1, top_p = 1 },
-          -- model = { model = "o3-2025-04-16", temperature = 1.1, top_p = 1 },
+          model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
+          -- model = { model = "gpt-4-turbo", temperature = 1.1, top_p = 1 },
           system_prompt = "You are a general AI assistant.\n\n"
             .. "The user provided the additional info about how they would like you to respond:\n\n"
             .. "- If you're unsure don't guess and say you don't know instead.\n"
@@ -53,8 +53,8 @@ return {
           name = "GptCode",
           chat = false,
           command = true,
-          model = { model = "gpt-4.1-2025-04-14", temperature = 0.8, top_p = 1 },
-          -- model = { model = "o3-2025-04-16", temperature = 0.8, top_p = 1 },
+          model = { model = "gpt-4o", temperature = 0.8, top_p = 1 },
+          -- model = { model = "gpt-4-turbo", temperature = 0.8, top_p = 1 },
           system_prompt = "You are an AI working as a code editor.\n\n"
             .. "Please AVOID COMMENTARY OUTSIDE OF THE SNIPPET RESPONSE.\n"
             .. "START AND END YOUR ANSWER WITH:\n\n```",

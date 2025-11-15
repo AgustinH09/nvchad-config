@@ -22,7 +22,8 @@ M.mason = {
     "rust-analyzer",
     "pyright",
     "hyprls",
-    "marksman",
+    "markdown_oxide",
+    -- "marksman", -- Disabled: using markdown_oxide for Obsidian instead
     "harper-ls",
 
     -- Formatters

@@ -35,13 +35,39 @@ require "cmds"
 
 vim.schedule(function()
   require "mappings"
-  require "configs.harpoon.mappings"
-  require "configs.nvim-tree"
-  require "configs.go"
-  require "configs.ruby"
-  require "configs.rust"
-  require "configs.markdown"
 end)
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "go",
+  once = true,
+  callback = function()
+    require "configs.go"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "ruby", "eruby" },
+  once = true,
+  callback = function()
+    require "configs.ruby"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "rust",
+  once = true,
+  callback = function()
+    require "configs.rust"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  once = true,
+  callback = function()
+    require "configs.markdown"
+  end,
+})
 
 -- Enable persistent undo with better location
 vim.defer_fn(function()

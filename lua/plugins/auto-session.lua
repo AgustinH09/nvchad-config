@@ -1,8 +1,8 @@
 return {
   "rmagatti/auto-session",
-  lazy = false,
+  event = "VimEnter",
   dependencies = {
-    "nvim-telescope/telescope.nvim", -- for session search
+    "nvim-telescope/telescope.nvim",
   },
 
   ---@module "auto-session"
@@ -86,7 +86,7 @@ return {
       function()
         local cwd = vim.fn.getcwd()
         local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
-        local session_name = cwd:match("([^/]+)$") or "unknown"
+        local session_name = cwd:match "([^/]+)$" or "unknown"
 
         if branch ~= "" then
           vim.notify(string.format("Project: %s (branch: %s)", session_name, branch), vim.log.levels.INFO)
