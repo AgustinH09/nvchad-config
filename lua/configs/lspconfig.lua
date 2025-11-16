@@ -94,7 +94,11 @@ local servers = {
   jsonls = {},
   terraformls = {},
   yamlls = {},
-  bashls = {},
+
+  -- Bash language server
+  bashls = {
+    filetypes = { "sh", "bash", "zsh" },
+  },
 
   -- Lua
   lua_ls = {
