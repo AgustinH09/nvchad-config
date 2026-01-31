@@ -1,7 +1,7 @@
 return {
   "mrcjkb/rustaceanvim",
   version = "^5",
-  lazy = false, -- This plugin is already lazy
+  lazy = false,
   ft = { "rust" },
   dependencies = {
     "nvim-lua/plenary.nvim",
@@ -15,6 +15,8 @@ return {
     vim.g.rustaceanvim = {
       -- Plugin configuration
       tools = {
+        executor = "termopen", -- Use termopen to avoid duplicate menus
+        test_executor = "termopen",
         hover_actions = {
           auto_focus = false,
         },
@@ -25,7 +27,7 @@ return {
       -- LSP configuration
       server = {
         on_attach = function(client, bufnr)
-          -- Disable formatting provided by rust-analyzer
+          -- Disable formatting provided by rust-analyzer (use conform.nvim instead)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
 
@@ -33,23 +35,29 @@ return {
           on_attach(client, bufnr)
 
           -- Remove the default <leader>ra binding from NvChad
-          vim.keymap.del("n", "<leader>ra", { buffer = bufnr })
+          pcall(vim.keymap.del, "n", "<leader>ra", { buffer = bufnr })
         end,
         on_init = on_init,
         capabilities = capabilities,
         default_settings = {
           -- rust-analyzer language server configuration
           ["rust-analyzer"] = {
-            checkOnSave = {
+            checkOnSave = true,
+            check = {
               command = "clippy",
+              allTargets = true,
             },
             cargo = {
               allFeatures = true,
-              loadOutDirsFromCheck = true,
-              runBuildScripts = true,
               buildScripts = {
                 enable = true,
+                rebuildOnSave = true,
+                useRustcWrapper = true,
               },
+            },
+            -- Runnables configuration (fixes "cargo check" only issue)
+            runnables = {
+              extraArgs = {},
             },
             procMacro = {
               enable = true,
@@ -60,7 +68,9 @@ return {
             diagnostics = {
               enable = true,
               disabled = { "unresolved-proc-macro" },
-              enableExperimental = true,
+              experimental = {
+                enable = true,
+              },
             },
             completion = {
               autoimport = {
@@ -95,8 +105,10 @@ return {
               parameterHints = {
                 enable = true,
               },
-              reborrowHints = {
+              expressionAdjustmentHints = {
                 enable = "never",
+                hideOutsideUnsafe = false,
+                mode = "prefix",
               },
               renderColons = true,
               typeHints = {
@@ -108,10 +120,10 @@ return {
             lens = {
               enable = true,
               run = {
-                enable = true,
+                enable = false, -- Disabled to prevent duplicate runnables (use <leader>rr instead)
               },
               debug = {
-                enable = true,
+                enable = false, -- Disabled to prevent duplicate debuggables (use <leader>rD instead)
               },
               implementations = {
                 enable = true,

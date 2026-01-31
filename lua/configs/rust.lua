@@ -39,20 +39,41 @@ M.setup = function()
 
   -- Create Cargo command
   vim.api.nvim_create_user_command("Cargo", function(opts)
-    local cmd = "cargo " .. opts.args
+    local args = opts.args
+    
+    -- Save current buffer FIRST if modified (critical for seeing changes!)
+    if vim.bo.modified then
+      vim.cmd "write"
+      -- Small delay to ensure filesystem sync
+      vim.wait(50)
+    end
+    
+    local cmd = "cargo " .. args
 
     -- Run in terminal for interactive commands
-    if opts.args:match "^run" or opts.args:match "^test" then
+    if args:match "^run" or args:match "^test" then
+      -- Close any existing terminal buffers to prevent stale output
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+          local buf_name = vim.api.nvim_buf_get_name(buf)
+          if buf_name:match "cargo" then
+            vim.api.nvim_buf_delete(buf, { force = true })
+          end
+        end
+      end
+      
+      -- Open fresh terminal split
       vim.cmd("split | terminal " .. cmd)
+      vim.cmd "startinsert" -- Start in terminal mode
     else
       vim.fn.jobstart(cmd, {
         on_stdout = function(_, data)
-          if data[1] ~= "" then
+          if data and data[1] ~= "" then
             vim.notify(table.concat(data, "\n"))
           end
         end,
         on_stderr = function(_, data)
-          if data[1] ~= "" then
+          if data and data[1] ~= "" then
             vim.notify(table.concat(data, "\n"), vim.log.levels.ERROR)
           end
         end,

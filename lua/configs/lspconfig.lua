@@ -68,7 +68,10 @@ vim.api.nvim_create_autocmd("CursorHold", {
 -- wrap NVChad’s on_attach to remove that default <leader>ra binding
 local on_attach = function(client, bufnr)
   nv_on_attach(client, bufnr)
-  pcall(vim.keymap.del, "n", "<leader>ra", { buffer = bufnr }) -- Safe delete
+  -- Only delete <leader>ra for non-Ruby LSPs (to allow vim-rails to use it)
+  if client.name ~= "ruby_lsp" then
+    pcall(vim.keymap.del, "n", "<leader>ra", { buffer = bufnr }) -- Safe delete
+  end
 
   if client:supports_method "textDocument/inlayHint" then
     vim.lsp.inlay_hint.enable(true, { buffer = bufnr })
@@ -87,10 +90,18 @@ end
 local servers = {
   -- simple defaults
   cssls = {},
-  eslint = {},
+  eslint = {
+    on_attach = function(client, bufnr)
+      if client.config.root_dir and client.config.root_dir:match "cirrus%-lms%-fe%-mono" then
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+      end
+      on_attach(client, bufnr)
+    end,
+  },
   harper_ls = {},
   html = {},
-  hypr_ls = {},
+  hyprls = {},
   jsonls = {},
   terraformls = {},
   yamlls = {},
@@ -98,6 +109,14 @@ local servers = {
   -- Bash language server
   bashls = {
     filetypes = { "sh", "bash", "zsh" },
+  },
+
+  -- Angular
+  angularls = {
+    root_dir = util.root_pattern("angular.json", "nx.json", "package.json", ".git"),
+    on_new_config = function(new_config, new_root_dir)
+      new_config.cmd = { "/home/chicha09/.local/share/nvim/mason/bin/ngserver", "--stdio", "--tsProbeLocations", new_root_dir, "--ngProbeLocations", new_root_dir }
+    end,
   },
 
   -- Lua

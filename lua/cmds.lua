@@ -53,3 +53,29 @@ end, {
     return { "typewriter", "minecraft" }
   end,
 })
+
+---
+-- COMMAND 3: LSP Log Management
+---
+vim.api.nvim_create_user_command("LspLogSize", function()
+  local log_path = vim.lsp.get_log_path()
+  local stat = vim.loop.fs_stat(log_path)
+
+  if stat then
+    local size_mb = stat.size / (1024 * 1024)
+    print(string.format("LSP Log Size: %.2f MB (%s)", size_mb, log_path))
+  else
+    print("LSP log file not found at: " .. log_path)
+  end
+end, { desc = "Show current LSP log file size" })
+
+vim.api.nvim_create_user_command("LspLogClear", function()
+  local log_path = vim.lsp.get_log_path()
+  local f = io.open(log_path, "w")
+  if f then
+    f:close()
+    print "LSP Log cleared successfully."
+  else
+    print "Failed to open LSP log for writing."
+  end
+end, { desc = "Truncate/Clear the LSP log file" })

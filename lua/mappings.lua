@@ -39,10 +39,10 @@ M("n", "<C-c>", require "functions.file_context", { desc = "Copy file with conte
 --   vim.notify "Copied line reference to clipboard"
 -- end, { desc = "Copy line reference to clipboard" })
 
--- Delete NvChad default mappings
-del("n", "<leader>ch")
-del("n", "<leader>th")
-del("n", "<leader>fm")
+-- Delete NvChad default mappings (use pcall to avoid errors if they don't exist)
+pcall(del, "n", "<leader>ch")
+pcall(del, "n", "<leader>th")
+pcall(del, "n", "<leader>fm")
 
 ----- BUFFER MANAGEMENT -----
 M("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close buffer" })
@@ -226,23 +226,34 @@ end, { desc = "Previous git hunk" })
 
 ----- LANGUAGE SPECIFIC -----
 -- Rust (rustaceanvim)
+local rust_grp = vim.api.nvim_create_augroup("UserRustKeymaps", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
+  group = rust_grp,
   pattern = "rust",
-  callback = function()
+  callback = function(ev)
+    local bufnr = ev.buf
+    
+    -- Helper for buffer-local mappings
+    local function B(mode, lhs, rhs, opts)
+      opts = vim.tbl_extend("force", default_opts, opts or {})
+      opts.buffer = bufnr
+      map(mode, lhs, rhs, opts)
+    end
+    
     -- Code actions & diagnostics
-    M("n", "<leader>ra", function()
+    B("n", "<leader>ra", function()
       vim.cmd.RustLsp "codeAction"
     end, { desc = "Code actions" })
-    M("v", "<leader>ra", function()
+    B("v", "<leader>ra", function()
       vim.cmd.RustLsp "codeAction"
     end, { desc = "Code actions" })
-    M("n", "K", function()
+    B("n", "K", function()
       vim.cmd.RustLsp { "hover", "actions" }
     end, { desc = "Hover actions" })
-    M("n", "<leader>re", function()
+    B("n", "<leader>re", function()
       vim.cmd.RustLsp "explainError"
     end, { desc = "Explain error" })
-    M("n", "<leader>rd", function()
+    B("n", "<leader>rd", function()
       vim.cmd.RustLsp "renderDiagnostic"
     end, { desc = "Render diagnostic" })
 
@@ -250,12 +261,20 @@ vim.api.nvim_create_autocmd("FileType", {
     M("n", "<leader>rr", function()
       vim.cmd.RustLsp "runnables"
     end, { desc = "Runnables" })
+    M("n", "<leader>rR", function()
+      -- Force refresh by running cargo metadata first
+      vim.fn.system "cargo metadata --no-deps"
+      vim.cmd.RustLsp "runnables"
+    end, { desc = "Runnables (force refresh)" })
     M("n", "<leader>rD", function()
       vim.cmd.RustLsp "debuggables"
     end, { desc = "Debuggables" })
     M("n", "<leader>rt", function()
       vim.cmd.RustLsp "testables"
     end, { desc = "Testables" })
+    M("n", "<leader>rl", function()
+      vim.cmd.RustLsp { "runnables", "last" }
+    end, { desc = "Re-run last runnable" })
 
     -- Code exploration
     M("n", "<leader>rE", function()
@@ -295,7 +314,8 @@ vim.api.nvim_create_autocmd("FileType", {
 
     -- Cargo commands
     M("n", "<leader>Cb", "<cmd>Cargo build<cr>", { desc = "Cargo build" })
-    M("n", "<leader>Cr", "<cmd>Cargo run<cr>", { desc = "Cargo run" })
+    M("n", "<leader>Cr", "<cmd>Cargo run<cr>", { desc = "Cargo run (force rebuild)" })
+    M("n", "<leader>CR", "<cmd>split | terminal cargo run<cr>", { desc = "Cargo run (cached)" })
     M("n", "<leader>Ct", "<cmd>Cargo test<cr>", { desc = "Cargo test" })
     M("n", "<leader>Cc", "<cmd>Cargo check<cr>", { desc = "Cargo check" })
     M("n", "<leader>Cl", "<cmd>Cargo clippy<cr>", { desc = "Cargo clippy" })
@@ -304,11 +324,27 @@ vim.api.nvim_create_autocmd("FileType", {
     M("n", "<leader>Cp", "<cmd>RustPlayground<cr>", { desc = "Open in Playground" })
     M("n", "<leader>Ca", ":CargoAddDep ", { desc = "Add dependency" })
     M("n", "<leader>Cs", ":CrateSearch ", { desc = "Search crates.io" })
+
+    -- Single file compilation (for standalone .rs files)
+    M("n", "<leader>Csc", function()
+      local file = vim.fn.expand "%:p"
+      vim.cmd("split | terminal rustc " .. file .. " && ./" .. vim.fn.expand "%:t:r")
+    end, { desc = "Compile & run single file (rustc)" })
+
+    -- Codelens management
+    M("n", "<leader>rL", function()
+      vim.lsp.codelens.refresh()
+    end, { desc = "Refresh codelens" })
+    M("n", "<leader>rC", function()
+      vim.lsp.codelens.run()
+    end, { desc = "Run codelens action" })
   end,
 })
 
 -- Markdown
+local markdown_grp = vim.api.nvim_create_augroup("UserMarkdownKeymaps", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
+  group = markdown_grp,
   pattern = "markdown",
   callback = function()
     M("n", "<leader>mp", "<cmd>MarkdownPerformanceMode<cr>", { desc = "Enable Markdown performance mode" })
@@ -318,11 +354,65 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Go
+local go_grp = vim.api.nvim_create_augroup("UserGoKeymaps", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
+  group = go_grp,
   pattern = "go",
   callback = function()
     M("n", "<leader>goh", "<cmd>GoDoc<CR>", { desc = "GoDoc in Telescope" })
     M("n", "<leader>goA", "<cmd>GoAlternate<CR>", { desc = "Go alternate file (test <-> impl)" })
+  end,
+})
+
+-- Ruby/Rails (vim-rails)
+local ruby_grp = vim.api.nvim_create_augroup("UserRubyKeymaps", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = ruby_grp,
+  pattern = { "ruby", "eruby" },
+  callback = function(ev)
+    local bufnr = ev.buf
+
+    -- Force remove NvChad's default <leader>ra (rename) binding
+    pcall(vim.keymap.del, "n", "<leader>ra", { buffer = bufnr })
+    pcall(vim.keymap.del, "n", "<leader>ra")
+
+    -- Helper for buffer-local mappings in this autocmd
+    local function B(mode, lhs, rhs, opts)
+      opts = vim.tbl_extend("force", default_opts, opts or {})
+      opts.buffer = bufnr
+      map(mode, lhs, rhs, opts)
+    end
+
+    -- Navigation
+    B("n", "<leader>rc", ":Econtroller ", { desc = "Go to controller", silent = false })
+    B("n", "<leader>rm", ":Emodel ", { desc = "Go to model", silent = false })
+    B("n", "<leader>rv", ":Eview ", { desc = "Go to view", silent = false })
+    B("n", "<leader>rh", ":Ehelper ", { desc = "Go to helper", silent = false })
+    B("n", "<leader>rM", ":Emigration ", { desc = "Go to migration", silent = false })
+    B("n", "<leader>rs", ":Espec ", { desc = "Go to spec", silent = false })
+    B("n", "<leader>rS", "<cmd>Eschema<cr>", { desc = "Go to schema" })
+    B("n", "<leader>rR", ":Einitializer ", { desc = "Go to initializer", silent = false })
+
+    -- Alternate file (THIS IS THE KEY MAPPING)
+    B("n", "<leader>ra", "<cmd>A<cr>", { desc = "Alternate file" })
+    B("n", "<leader>rA", "<cmd>AV<cr>", { desc = "Alternate file (vertical)" })
+
+    -- Rails commands
+    B("n", "<leader>rr", ":Rails ", { desc = "Rails command", silent = false })
+    B("n", "<leader>rg", ":Generate ", { desc = "Rails generate", silent = false })
+    B("n", "<leader>rd", ":Destroy ", { desc = "Rails destroy", silent = false })
+
+    -- Database
+    B("n", "<leader>rdb", "<cmd>Rails db:migrate<cr>", { desc = "Run migrations" })
+    B("n", "<leader>rdr", "<cmd>Rails db:rollback<cr>", { desc = "Rollback migration" })
+    B("n", "<leader>rds", "<cmd>Rails db:seed<cr>", { desc = "Seed database" })
+
+    -- Testing
+    B("n", "<leader>rT", "<cmd>Rails test %<cr>", { desc = "Test current file" })
+
+    -- Server
+    B("n", "<leader>rss", "<cmd>Rails server<cr>", { desc = "Start server" })
+    B("n", "<leader>rsc", "<cmd>Rails console<cr>", { desc = "Start console" })
   end,
 })
 

@@ -5,6 +5,8 @@ local shellcheck_available = vim.fn.executable "shellcheck" == 1
 lint.linters_by_ft = {
   lua = { "luacheck" },
   ruby = { "rubocop" },
+  eruby = {}, -- ERB templates - explicitly empty to prevent htmlhint false positives
+  ["eruby.html"] = {}, -- Compound filetype for ERB - also needs explicit empty config
   typescript = { "eslint_d" },
   javascript = { "eslint_d" },
   javascriptreact = { "eslint_d" },
@@ -27,6 +29,13 @@ lint.linters_by_ft = {
 local luacheck_args = lint.linters.luacheck.args or {}
 vim.list_extend(luacheck_args, { "--globals", "vim" })
 lint.linters.luacheck.args = luacheck_args
+
+-- Configure htmlhint to skip ERB templates (avoid false positives on ERB syntax)
+lint.linters.htmlhint.condition = function(ctx)
+  local filename = ctx.filename or ""
+  -- Skip ERB files (.erb, .html.erb, .turbo_stream.erb, etc.)
+  return not filename:match "%.erb$"
+end
 
 -- Configure eslint_d to respect project configs
 lint.linters.eslint_d = {

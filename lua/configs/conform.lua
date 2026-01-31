@@ -45,12 +45,18 @@ local options = {
       args = { "--server", "--auto-correct-all", "--stderr", "--force-exclusion", "--stdin", "$FILENAME" },
     },
     prettier = {
-      prepend_args = { "--single-quote", "--trailing-comma", "es5" },
+      -- prepend_args = { "--single-quote", "--trailing-comma", "es5" },
     },
     eslint_d = {
       timeout_ms = 5000,
       condition = function(ctx)
-        return vim.fs.find({ ".eslintrc", ".eslintrc.js", ".eslintrc.json" }, { path = ctx.filename, upward = true })[1]
+        if not ctx.filename then
+          return false
+        end
+        if ctx.filename:match "cirrus%-lms%-fe%-mono" then
+          return false
+        end
+        return vim.fs.find({ ".eslintrc", ".eslintrc.js", ".eslintrc.json", "eslint.config.js", "eslint.config.mjs" }, { path = ctx.filename, upward = true })[1]
       end,
     },
   },

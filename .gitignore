@@ -1,7 +1,0 @@
-# AI/OpenCode Configuration Files (local only)
-# These files contain personal AI assistant configurations and should not be committed
-opencode.json
-.opencode/
-AGENTS.md
-AGENT_*.md
-GEMINI.md
