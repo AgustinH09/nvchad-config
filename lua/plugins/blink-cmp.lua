@@ -5,7 +5,6 @@ return {
   version = "1.*",
   dependencies = {
     "giuxtaposition/blink-cmp-copilot",
-    "Kaiser-Yang/blink-cmp-avante",
     {
       "L3MON4D3/LuaSnip",
       version = "v2.*",
@@ -118,7 +117,7 @@ return {
       },
     },
     sources = {
-      default = { "lsp", "path", "snippets", "buffer", "copilot", "avante" },
+      default = { "lsp", "path", "snippets", "buffer", "copilot" },
       providers = {
         copilot = {
           name = "copilot",
@@ -136,12 +135,6 @@ return {
             end
             return items
           end,
-        },
-        avante = {
-          module = "blink-cmp-avante",
-          name = "Avante",
-          score_offset = -100,
-          opts = {},
         },
         buffer = {
           name = "buffer",

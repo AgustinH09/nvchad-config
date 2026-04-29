@@ -1,4 +1,6 @@
-local function file_context()
+local M = {}
+
+function M.file_context()
   local file_path = vim.fn.expand "%"
 
   if file_path == "" then
@@ -26,9 +28,44 @@ local function file_context()
   return content_for_llm
 end
 
-vim.api.nvim_create_user_command("FileContext", file_context, {
+function M.selection_context()
+  local file_path = vim.fn.expand "%"
+
+  if file_path == "" then
+    vim.notify("Cannot copy context: No file name.", vim.log.levels.WARN)
+    return
+  end
+
+  -- Exit visual mode to set '< and '> marks
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "x", false)
+
+  local start_line = vim.fn.line "'<"
+  local end_line = vim.fn.line "'>"
+  local file_type = vim.bo.filetype
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+
+  local line_ref = start_line == end_line and tostring(start_line) or start_line .. "-" .. end_line
+
+  local content_for_llm = {
+    "-- FILE: " .. file_path .. ":" .. line_ref .. " --",
+    "```" .. file_type,
+  }
+
+  for _, line in ipairs(lines) do
+    table.insert(content_for_llm, line)
+  end
+
+  table.insert(content_for_llm, "```")
+  content_for_llm = table.concat(content_for_llm, "\n")
+
+  vim.fn.setreg("+", content_for_llm)
+  vim.notify("Copied selection with context to clipboard!", vim.log.levels.INFO)
+  return content_for_llm
+end
+
+vim.api.nvim_create_user_command("FileContext", M.file_context, {
   desc = "Copy file with context for LLM",
   force = true,
 })
 
-return file_context
+return M

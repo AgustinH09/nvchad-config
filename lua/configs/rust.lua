@@ -40,14 +40,14 @@ M.setup = function()
   -- Create Cargo command
   vim.api.nvim_create_user_command("Cargo", function(opts)
     local args = opts.args
-    
+
     -- Save current buffer FIRST if modified (critical for seeing changes!)
     if vim.bo.modified then
       vim.cmd "write"
       -- Small delay to ensure filesystem sync
       vim.wait(50)
     end
-    
+
     local cmd = "cargo " .. args
 
     -- Run in terminal for interactive commands
@@ -61,7 +61,7 @@ M.setup = function()
           end
         end
       end
-      
+
       -- Open fresh terminal split
       vim.cmd("split | terminal " .. cmd)
       vim.cmd "startinsert" -- Start in terminal mode

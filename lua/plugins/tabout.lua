@@ -1,7 +1,7 @@
 return {
   {
     "abecodes/tabout.nvim",
-    lazy = false,
+    event = "InsertCharPre",
     config = function()
       require("tabout").setup {
         tabkey = "<A-t>", -- key to trigger tabout, set to an empty string to disable

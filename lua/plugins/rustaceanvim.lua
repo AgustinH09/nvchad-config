@@ -1,7 +1,6 @@
 return {
   "mrcjkb/rustaceanvim",
   version = "^5",
-  lazy = false,
   ft = { "rust" },
   dependencies = {
     "nvim-lua/plenary.nvim",

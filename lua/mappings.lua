@@ -29,7 +29,9 @@ M("n", "<leader>gv", "`[v`]", { desc = "Visually select last paste/change" })
 M("n", "Q", "<nop>", { desc = "Disable Ex mode" })
 
 ----- FILE OPERATIONS -----
-M("n", "<C-c>", require "functions.file_context", { desc = "Copy file with context for LLM" })
+local file_context = require "functions.file_context"
+M("n", "<C-c>", file_context.file_context, { desc = "Copy file with context for LLM" })
+M("x", "<C-c>", file_context.selection_context, { desc = "Copy selection with context for LLM" })
 
 -- Copy file & line paths to clipboard
 -- M("n", "<leader>fL", function()
@@ -232,14 +234,14 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "rust",
   callback = function(ev)
     local bufnr = ev.buf
-    
+
     -- Helper for buffer-local mappings
     local function B(mode, lhs, rhs, opts)
       opts = vim.tbl_extend("force", default_opts, opts or {})
       opts.buffer = bufnr
       map(mode, lhs, rhs, opts)
     end
-    
+
     -- Code actions & diagnostics
     B("n", "<leader>ra", function()
       vim.cmd.RustLsp "codeAction"

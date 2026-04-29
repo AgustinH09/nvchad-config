@@ -7,6 +7,7 @@ return {
   cmd = "MCPHub", -- lazy load by default
   -- build = "bundled_build.lua",
   build = "npm install -g mcp-hub@latest",
+  enabled = false,
   config = function()
     require("mcphub").setup {
       -- use_bundled_binary = true,
