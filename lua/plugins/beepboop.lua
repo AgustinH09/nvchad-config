@@ -26,6 +26,21 @@ local profiles = {
       { auto_command = "BufWrite", sounds = { "open_flip1.wav", "open_flip2.wav", "open_flip3.wav" } },
     },
   },
+  pilot = {
+    sound_directory = vim.fn.stdpath "config" .. "/sounds/pilot",
+    sound_map = (function()
+      local pilot_sounds = {}
+      for i = 1, 150 do
+        table.insert(pilot_sounds, string.format("pilot_word_%03d.wav", i))
+      end
+      return {
+        {
+          auto_command = "InsertCharPre",
+          sounds = pilot_sounds,
+        },
+      }
+    end)(),
+  },
 }
 
 return {
