@@ -115,7 +115,7 @@ local servers = {
   angularls = {
     root_dir = util.root_pattern("angular.json", "nx.json", "package.json", ".git"),
     on_new_config = function(new_config, new_root_dir)
-      new_config.cmd = { "/home/chicha09/.local/share/nvim/mason/bin/ngserver", "--stdio", "--tsProbeLocations", new_root_dir, "--ngProbeLocations", new_root_dir }
+      new_config.cmd = { vim.fn.expand("$HOME") .. "/.local/share/nvim/mason/bin/ngserver", "--stdio", "--tsProbeLocations", new_root_dir, "--ngProbeLocations", new_root_dir }
     end,
   },
 

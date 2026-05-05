@@ -28,12 +28,12 @@ vim.api.nvim_create_user_command("BeepBoopSelect", function(args)
   local new_profile = args.fargs[1]
 
   if not new_profile then
-    print "Error: No profile provided. Use 'typewriter', 'minecraft', or 'pilot'."
+    print "Error: No profile provided. Use 'typewriter' or 'minecraft'."
     return
   end
 
-  if new_profile ~= "typewriter" and new_profile ~= "minecraft" and new_profile ~= "pilot" then
-    print "Invalid profile. Choose 'typewriter', 'minecraft', or 'pilot'."
+  if new_profile ~= "typewriter" and new_profile ~= "minecraft" then
+    print "Invalid profile. Choose 'typewriter' or 'minecraft'."
     return
   end
 
@@ -47,10 +47,10 @@ vim.api.nvim_create_user_command("BeepBoopSelect", function(args)
     require("lazy").load { plugins = plugin_name }
   end
 end, {
-  desc = "Set BeepBoop sound profile [typewriter|minecraft|pilot]",
+  desc = "Set BeepBoop sound profile [typewriter|minecraft]",
   nargs = 1,
   complete = function(ArgLead, CmdLine, CursorPos)
-    return { "typewriter", "minecraft", "pilot" }
+    return { "typewriter", "minecraft" }
   end,
 })
 
