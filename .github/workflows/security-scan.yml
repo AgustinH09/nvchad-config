@@ -1,0 +1,267 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+
+jobs:
+  secret-scanning:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Secret Scanning
+        uses: trufflesecurity/trufflehog@f446421baf832d6356c42c1743d99abff52ff334 # main
+        with:
+          path: ./
+          base: ""
+          head: ""
+          extra_args: --only-verified
+
+  path-validation:
+    name: Validate Paths
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Check for hardcoded paths
+        run: |
+          echo "🔍 Scanning for hardcoded absolute paths..."
+
+          PATTERNS=(
+            "/home/"chicha09
+          )
+
+          FOUND_ISSUES=0
+
+          for pattern in "${PATTERNS[@]}"; do
+            echo "Checking pattern: $pattern"
+
+            if grep -r -n -E "$pattern" \
+              --exclude-dir=".git" \
+              --exclude-dir="node_modules" \
+              --exclude-dir=".github" \
+              --exclude="*.age" \
+              --exclude="*.md" \
+              . 2>/dev/null; then
+
+              echo "❌ Found hardcoded paths matching: $pattern"
+              FOUND_ISSUES=1
+            fi
+          done
+
+          if [ $FOUND_ISSUES -eq 1 ]; then
+            echo "🚨 ERROR: Hardcoded absolute paths found!"
+            exit 1
+          else
+            echo "✅ No hardcoded absolute paths found!"
+          fi
+
+  encryption-verification:
+    name: Verify Encryption
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Verify sensitive files are encrypted
+        run: |
+          echo "🔐 Verifying sensitive files are encrypted..."
+
+          SENSITIVE_PATTERNS=(
+            "*.pem"
+            "*.key"
+            "*token*"
+            "*secret*"
+            "*password*"
+            "*.gpg"
+            "*credentials*"
+            "*auth*"
+          )
+
+          FOUND_UNENCRYPTED=0
+
+          for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+            while IFS= read -r file; do
+              if [[ ! "$file" =~ \.age$ ]] && \
+                 [[ ! "$file" =~ ^\.git/ ]] && \
+                 [[ ! "$file" =~ node_modules/ ]] && \
+                 [[ ! "$file" =~ \.github/workflows/ ]] && \
+                 [[ ! "$file" =~ \.md$ ]]; then
+
+                echo "❌ Unencrypted sensitive file found: $file"
+                FOUND_UNENCRYPTED=1
+              fi
+            done < <(find . -type f -iname "$pattern" 2>/dev/null || true)
+          done
+
+          echo ""
+          echo "🔍 Checking for exposed API keys in code..."
+
+          if grep -r -n -E '(API_KEY|SECRET|TOKEN|PASSWORD)\s*=\s*["\047][a-zA-Z0-9_-]{20,}["\047]' \
+            --exclude-dir=".git" \
+            --exclude-dir="node_modules" \
+            --exclude="*.age" \
+            --exclude="*.md" \
+            . 2>/dev/null; then
+
+            echo "❌ Potential API keys found in code!"
+            FOUND_UNENCRYPTED=1
+          fi
+
+          if [ $FOUND_UNENCRYPTED -eq 1 ]; then
+            echo ""
+            echo "🚨 SECURITY ISSUE: Unencrypted sensitive files detected!"
+            echo "Please encrypt these files using Age before committing."
+            exit 1
+          else
+            echo "✅ All sensitive files appear to be properly encrypted!"
+          fi
+
+  file-permissions:
+    name: Check File Permissions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Check for overly permissive files
+        run: |
+          echo "🔒 Checking file permissions..."
+
+          EXECUTABLE_FILES=$(git ls-files --stage | grep '^100755' | awk '{print $4}')
+
+          if [ -n "$EXECUTABLE_FILES" ]; then
+            echo "📋 Executable files found:"
+            echo "$EXECUTABLE_FILES"
+            echo ""
+            echo "ℹ️  Verify these files should be executable."
+          else
+            echo "✅ No unexpected executable permissions found."
+          fi
+
+  dependency-scanning:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          ignore-unfixed: true
+          exit-code: '1'
+
+      - name: Upload Trivy SARIF report
+        if: always() && hashFiles('trivy-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a # v4.36.3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+        continue-on-error: true
+
+  git-history-scan:
+    name: Git History Deep Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Scan git history for secrets
+        run: |
+          echo "🕵️  Scanning entire git history for accidentally committed secrets..."
+
+          PATTERNS=(
+            "BEGIN.*PRIVATE KEY"
+            "aws_access_key_id"
+            "aws_secret_access_key"
+            "AKIA[0-9A-Z]{16}"
+            "ghp_[0-9a-zA-Z]{36}"
+            "github_pat_[0-9a-zA-Z_]{82}"
+          )
+
+          FOUND_IN_HISTORY=0
+
+          for pattern in "${PATTERNS[@]}"; do
+            echo "Checking for: $pattern"
+
+            if git log --all --full-history -p -S "$pattern" --source -- . ':!.github/workflows' ':!.gitleaks.toml' ':!.pre-commit-config.yaml' \
+              | grep -v "\.age" \
+              | grep -E "$pattern" 2>/dev/null; then
+
+              echo "❌ Found potential secret in git history: $pattern"
+              FOUND_IN_HISTORY=1
+            fi
+          done
+
+          if [ $FOUND_IN_HISTORY -eq 1 ]; then
+            echo "🚨 ERROR: Secrets found in git history!"
+            exit 1
+          else
+            echo "✅ No secrets found in git history!"
+          fi
+
+  summary:
+    name: Security Scan Summary
+    runs-on: ubuntu-latest
+    needs:
+      [
+        secret-scanning,
+        path-validation,
+        encryption-verification,
+        file-permissions,
+        dependency-scanning,
+        git-history-scan,
+      ]
+    if: always()
+
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "# 🔐 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret Scanning | ${{ needs.secret-scanning.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Path Validation | ${{ needs.path-validation.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Encryption Verification | ${{ needs.encryption-verification.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| File Permissions | ${{ needs.file-permissions.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Scanning | ${{ needs.dependency-scanning.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| History Scan | ${{ needs.git-history-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan completed at:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Verify Overall Result
+        if: always() && (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled'))
+        run: |
+          echo "❌ Security scans failed. Please check the results above."
+          exit 1
