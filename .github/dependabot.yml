@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/.snippets"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/snippets"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "bundler"
+    directory: "/.ruby-lsp"
+    schedule:
+      interval: "daily"

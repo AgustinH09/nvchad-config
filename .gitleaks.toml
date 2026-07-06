@@ -1,0 +1,228 @@
+title = "Gitleaks Config for Dotfiles"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for encrypted files and safe patterns"
+
+paths = [
+  '''\.age$''',
+  '''\.git/''',
+  '''node_modules/''',
+  '''.tmux/plugins/''',
+  '''\.pre-commit-config\.yaml$''',
+  '''\.github/workflows/security-scan\.yml$''',
+  '''scripts/security.*check\.sh$''',
+  '''security-check\.sh$''',
+  '''\.gitleaks\.toml$''',
+]
+
+regexes = [
+  '''age1lwajdwev4qtc6zenhgh9dttpe4e8ft7mjwplm4hfltxxcjdpjg6qrrz7zz''',
+  '''vim\.env\.[A-Z_]+''',
+  '''os\.getenv''',
+  '''\$\{[A-Z_]+\}''',
+  '''\$[A-Z_]+''',
+  '''PasswordFieldTextColor''',
+  '''PasswordIconColor''',
+  '''PASSWORD\)\s*=\s*["\047][a-zA-Z0-9_-]{20,}["\047]''',
+  '''\bpwd\b''',
+  '''\$\{?PWD''',
+  '''PWD[#%}]''',
+]
+
+files = [
+  '''SECURITY_ASSESSMENT\.md$''',
+  '''SECURITY.*\.md$''',
+  '''README\.md$''',
+  '''\.github/.*\.md$''',
+  '''\.github/workflows/.*\.yml$''',
+  '''\.example$''',
+  '''\.sample$''',
+  '''\.template$''',
+]
+
+[[rules]]
+id = "unencrypted-ssh-private-key"
+description = "Unencrypted SSH private key"
+regex = '''-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----'''
+tags = ["key", "ssh", "critical"]
+
+[[rules]]
+id = "unencrypted-pem-file"
+description = "Unencrypted PEM file"
+regex = '''-----BEGIN .* PRIVATE KEY-----'''
+tags = ["key", "pem", "critical"]
+[rules.allowlist]
+paths = [
+  '''\.age$''',
+  '''encrypted_.*\.pem\.age$''',
+]
+
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS Access Key ID"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+tags = ["aws", "critical"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws(.{0,20})?['\"][0-9a-zA-Z\/+]{40}['\"]'''
+tags = ["aws", "critical"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+tags = ["github", "critical"]
+
+[[rules]]
+id = "github-oauth"
+description = "GitHub OAuth Token"
+regex = '''gho_[0-9a-zA-Z]{36}'''
+tags = ["github", "critical"]
+
+[[rules]]
+id = "github-app-token"
+description = "GitHub App Token"
+regex = '''(ghu|ghs)_[0-9a-zA-Z]{36}'''
+tags = ["github", "critical"]
+
+[[rules]]
+id = "github-refresh-token"
+description = "GitHub Refresh Token"
+regex = '''ghr_[0-9a-zA-Z]{76}'''
+tags = ["github", "critical"]
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI API Key"
+regex = '''sk-[a-zA-Z0-9]{48}'''
+tags = ["api", "openai", "high"]
+[rules.allowlist]
+regexes = [
+  '''vim\.env\.OPENAI_API_KEY''',
+  '''os\.getenv.*OPENAI''',
+]
+
+[[rules]]
+id = "anthropic-api-key"
+description = "Anthropic API Key"
+regex = '''sk-ant-[a-zA-Z0-9\-]{95}'''
+tags = ["api", "anthropic", "high"]
+
+[[rules]]
+id = "google-api-key"
+description = "Google API Key"
+regex = '''AIza[0-9A-Za-z\-_]{35}'''
+tags = ["api", "google", "high"]
+
+[[rules]]
+id = "slack-token"
+description = "Slack Token"
+regex = '''xox[baprs]-([0-9a-zA-Z]{10,48})'''
+tags = ["slack", "high"]
+
+[[rules]]
+id = "slack-webhook"
+description = "Slack Webhook"
+regex = '''https://hooks\.slack\.com/services/T[a-zA-Z0-9_]{8}/B[a-zA-Z0-9_]{8}/[a-zA-Z0-9_]{24}'''
+tags = ["slack", "webhook", "high"]
+
+[[rules]]
+id = "stripe-api-key"
+description = "Stripe API Key"
+regex = '''(?i)stripe(.{0,20})?['\"][sk|rk]_(test|live)_[0-9a-zA-Z]{24}['\"]'''
+tags = ["stripe", "high"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey|api[_-]?secret)(.{0,20})?['\"][0-9a-zA-Z\-_]{20,}['\"]'''
+tags = ["api", "generic", "medium"]
+[rules.allowlist]
+regexes = [
+  '''vim\.env\.''',
+  '''os\.getenv''',
+  '''\$\{''',
+  '''api_key\s*=\s*vim\.env''',
+  '''api_key.*or\s+""''',
+]
+
+[[rules]]
+id = "private-key-generic"
+description = "Generic Private Key"
+regex = '''(?i)-----BEGIN .* PRIVATE KEY-----'''
+tags = ["key", "private", "critical"]
+[rules.allowlist]
+paths = [
+  '''\.age$''',
+  '''encrypted_.*''',
+]
+
+[[rules]]
+id = "password-in-url"
+description = "Password in URL"
+regex = '''[a-zA-Z]{3,10}://[^/\s:@]{3,20}:[^/\s:@]{3,20}@.{1,100}'''
+tags = ["password", "url", "high"]
+
+[[rules]]
+id = "hardcoded-password"
+description = "Hardcoded Password"
+regex = '''(?i)(password|passwd|pwd)(.{0,20})?['\"][^'\"]{8,}['\"]'''
+tags = ["password", "medium"]
+[rules.allowlist]
+paths = [
+  '''dot_zshrc$''',
+  '''dot_zshrc\.tmpl$''',
+  '''dot_bashrc$''',
+  '''dot_bash_profile$''',
+  '''dot_config/hypr/scripts/executable_sddm_wallpaper\.sh$''',
+  '''dot_config/kitty/kitty-themes/dot_tools/executable_previews\.sh$''',
+]
+regexes = [
+  '''password_store''',
+  '''password.*placeholder''',
+  '''password.*example''',
+  '''\bpwd\b''',
+  '''PWD[#%}]''',
+  '''PasswordFieldTextColor''',
+  '''PasswordIconColor''',
+]
+
+[[rules]]
+id = "jwt-token"
+description = "JWT Token"
+regex = '''eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*'''
+tags = ["jwt", "token", "high"]
+
+[[rules]]
+id = "docker-auth"
+description = "Docker Auth Token"
+regex = '''(?i)docker(.{0,20})?['\"][0-9a-zA-Z\-_]{20,}['\"]'''
+tags = ["docker", "medium"]
+[rules.allowlist]
+paths = [
+  '''\.age$''',
+  '''encrypted_.*''',
+]
+
+[[rules]]
+id = "npm-token"
+description = "NPM Token"
+regex = '''npm_[a-zA-Z0-9]{36}'''
+tags = ["npm", "high"]
+
+[[rules]]
+id = "pypi-token"
+description = "PyPI Token"
+regex = '''pypi-AgEIcHlwaS5vcmc[A-Za-z0-9\-_]{50,}'''
+tags = ["pypi", "high"]
+
+[[rules]]
+id = "terraform-token"
+description = "Terraform Cloud/Enterprise Token"
+regex = '''[a-z0-9]{14}\.atlasv1\.[a-z0-9\-_=]{60,}'''
+tags = ["terraform", "high"]
